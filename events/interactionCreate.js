@@ -6,7 +6,9 @@ module.exports = {
         const { commandName: name } = cmd;
         const cmdClass = require('./class.json')[name];
         const cmdFile = require(`./commands/${cmdClass}/${name}`);
-        if (!cmdFile.ownerOnly || cmd.user.id == ownerId) {
+        if (cmdFile.ownerOnly && cmd.user.id != ownerId) {
+            cmd.reply('這個指令只有擁有者才能使用');
+        } else {
             cmdFile.do(cmd);
         }
     }

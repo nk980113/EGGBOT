@@ -3,7 +3,6 @@ const fs = require('fs');
 const { guildId } = require('../../../config.json');
 module.exports = {
     data: new SlashCommandBuilder().setName('cmds').setDescription('查看所有指令'),
-    test: true,
     do(cmd) {
         let cmdsStr = '';
         const cmdDirs = fs.readdirSync('./events/commands');

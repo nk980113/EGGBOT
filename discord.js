@@ -1,5 +1,4 @@
-const refresh = require('./refresh');
-refresh();
+require('./refresh')(); // Refresh slash commands 重新整理斜線指令
 
 const { Client, Intents } = require('discord.js');
 const fs = require('fs');
@@ -7,7 +6,7 @@ const { token } = require('./token.json');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
 const events = fs.readdirSync('./events');
-
+// Event handling 事件處理
 for (const file of events) {
     if (!file.endsWith('.js')) continue;
     const event = require(`./events/${file}`);
@@ -19,5 +18,4 @@ for (const file of events) {
         console.log(`main:added listener to event "${event.name}"`);
     }
 }
-module.exports = {};
-client.login(token);
+client.login(token); // Login Discord 登入 Discord
