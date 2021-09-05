@@ -1,5 +1,4 @@
 const { REST } = require('@discordjs/rest');
-// const { SlashCommandBuilder: Sb } = require('@discordjs/builders');
 const { Routes } = require('discord-api-types/v9');
 const { token } = require('./token.json');
 const { clientId, guildId } = require('./config.json');
