@@ -11,6 +11,7 @@ module.exports = {
             const cmdFiles = fs.readdirSync(`./events/commands/${dir}`).filter(f => f.endsWith('.js'));
             for (const file of cmdFiles) {
                 const importedCmd = require(`../${dir}/${file}`);
+                if (importedCmd.off) continue;
                 if (!importedCmd.test || cmd.guildId == guildId) {
                     cmdsStr += `\`${file}\` `.replace('.js', '');
                 }

@@ -1,5 +1,7 @@
 {
     "refresh": "Dev",
     "cmds": "Info",
-    "bi": "Info"
+    "bi": "Info",
+    "play": "Music",
+    "turtle-soup": "Turtle Soup"
 }

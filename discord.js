@@ -1,21 +1,22 @@
-require('./refresh')(); // Refresh slash commands 重新整理斜線指令
+require('./refresh')();
 
 const { Client, Intents } = require('discord.js');
 const fs = require('fs');
 const { token } = require('./token.json');
+const logger = require('./logger');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 
+logger.info('----------------------------------------------------------');
 const events = fs.readdirSync('./events');
-// Event handling 事件處理
 for (const file of events) {
     if (!file.endsWith('.js')) continue;
     const event = require(`./events/${file}`);
     if (event.once) {
         client.once(event.name, (...args) => event.do(...args));
-        console.log(`main:added once listener to event "${event.name}"`);
+        logger.info(`main:added once listener to event "${event.name}"`);
     } else {
         client.on(event.name, (...args) => event.do(...args));
-        console.log(`main:added listener to event "${event.name}"`);
+        logger.info(`main:added listener to event "${event.name}"`);
     }
 }
-client.login(token); // Login Discord 登入 Discord
+client.login(token);

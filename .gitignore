@@ -2,3 +2,4 @@ node_modules/
 .gitattributes
 token.json
 intents.txt
+log.json

@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token } = require('./token.json');
@@ -12,12 +13,13 @@ const refresh = () => {
         const cmdFiles = fs.readdirSync(`./events/commands/${dir}`).filter(f => f.endsWith('.js'));
         for (const file of cmdFiles) {
             const cmd = require(`./events/commands/${dir}/${file}`);
+            if (cmd.off) continue;
             if (cmd.test) {
                 testCmds.push(cmd.data.toJSON());
-                console.log(`refresh:Pushed testing command ${file.replace('.js', '')}`);
+                logger.info(`refresh:Pushed testing command ${file.replace('.js', '')}`);
             } else {
                 cmds.push(cmd.data.toJSON());
-                console.log(`refresh:Pushed command ${file.replace('.js', '')}`);
+                logger.info(`refresh:Pushed command ${file.replace('.js', '')}`);
             }
         }
     }
@@ -27,18 +29,18 @@ const refresh = () => {
                 Routes.applicationCommands(clientId),
                 { body: cmds }
             );
-            console.log('refresh:Global /commands refreshed.');
+            logger.info('refresh:Global /commands refreshed.');
         } catch(err) {
-            console.error(err);
+            logger.error(err);
         }
         try {
             await r.put(
                 Routes.applicationGuildCommands(clientId, guildId),
                 { body: testCmds }
             );
-            console.log('refresh:Testing /commands refreshed.');
+            logger.info('refresh:Testing /commands refreshed.');
         } catch(err) {
-            console.error(err);
+            logger.error(err);
         }
     })();
     
