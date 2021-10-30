@@ -3,5 +3,6 @@
     "cmds": "Info",
     "bi": "Info",
     "play": "Music",
-    "turtle-soup": "Turtle Soup"
+    "turtle-soup": "Turtle Soup",
+    "ping": "Dev"
 }

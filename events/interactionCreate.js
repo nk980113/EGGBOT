@@ -1,10 +1,8 @@
 const { ownerId } = require('../config.json');
 module.exports = {
     name: 'interactionCreate',
-    do(inter) {
-        (() => {
-            if (!inter.isCommand()) return;
-            const cmd = inter;
+    do: [cmd => {
+        if (!cmd.isCommand()) return;
             const { commandName: name } = cmd;
             const cmdClass = require('./class.json')[name];
             const cmdFile = require(`./commands/${cmdClass}/${name}`);
@@ -13,11 +11,10 @@ module.exports = {
             } else {
                 cmdFile.do(cmd);
             }
-        })();
-        (() => {
-            if (!inter.isButton()) return;
-            const btn = inter;
+        },
+        btn => {
+            if (!btn.isButton()) return;
             const pref = btn.id.slice(0, 4)
-        })();
-    }
+        }
+    ]
 };

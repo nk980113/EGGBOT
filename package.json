@@ -18,6 +18,8 @@
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
     "pino": "^7.0.0-rc.9",
+    "sequelize": "^6.8.0",
+    "sqlite3": "^5.0.2",
     "util": "^0.12.4",
     "ytdl-core": "^4.9.1"
   }

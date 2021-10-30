@@ -12,10 +12,14 @@ for (const file of events) {
     if (!file.endsWith('.js')) continue;
     const event = require(`./events/${file}`);
     if (event.once) {
-        client.once(event.name, (...args) => event.do(...args));
+        event.do.forEach(f => {
+            client.once(event.name, (...args) => f(...args));
+        });
         logger.info(`main:added once listener to event "${event.name}"`);
     } else {
-        client.on(event.name, (...args) => event.do(...args));
+        event.do.forEach(f => {
+            client.on(event.name, (...args) => f(...args));
+        });
         logger.info(`main:added listener to event "${event.name}"`);
     }
 }

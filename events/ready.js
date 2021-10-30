@@ -1,7 +1,8 @@
+const logger = require('../logger');
 module.exports = {
     name: 'ready',
     once: true,
-    do(c) {
-        console.log(`ready:以${c.user.tag}身分登入`);
-    }
+    do: [c => {
+        logger.info(`ready:以${c.user.tag}身分登入`);
+    }]
 };
