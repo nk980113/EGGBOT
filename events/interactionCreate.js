@@ -14,7 +14,14 @@ module.exports = {
         },
         btn => {
             if (!btn.isButton()) return;
-            const pref = btn.id.slice(0, 4)
-        }
+            const pref = btn.customId.slice(0, 4);
+        },
+        menu => {
+            if (!menu.isSelectMenu()) return;
+            const pref = menu.customId.slice(0, 4);
+            const fileName = require('./menuPrefix.json')[pref];
+            require(`./menus/${fileName}`)(menu);
+
+        },
     ]
 };

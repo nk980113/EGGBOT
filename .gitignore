@@ -4,3 +4,4 @@ token.json
 intents.txt
 log.json
 DB/db.sqlite
+DB/temp.js
