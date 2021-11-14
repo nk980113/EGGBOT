@@ -4,6 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder().setName('together').setDescription('使用discord-together套件提供的功能'),
     test: true,
     do(cmd) {
+        if (!cmd.guild) return cmd.reply('在伺服器中才能使用此指令');
         cmd.reply({
             content: '好吧，選一項',
             components: [

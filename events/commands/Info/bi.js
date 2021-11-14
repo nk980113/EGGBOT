@@ -6,6 +6,6 @@ module.exports = {
         const package = require('../../../package.json');
         await cmd.deferReply();
         await sleep(500);
-        await cmd.editReply('`版本`:`β ' + package.version + '`\n`創造者`:eggeggegg#1278\n`官網`: 建造中 \n`使用套件版本`:discord.js v' + package.dependencies['discord.js'].replace('^', '')); // https://sites.google.com/view/eggbotsblogger
+        await cmd.editReply('`版本`:`β ' + package.version + '`\n`創造者`:eggeggegg#1278\n`官網`: 建造中 \n`使用套件版本`:discord.js v' + package.dependencies['discord.js'].replace('^', '') + '\n`官方伺服器`: || https://discord.gg/26R8MPze2J ||'); // https://sites.google.com/view/eggbotsblogger
     }
 };
