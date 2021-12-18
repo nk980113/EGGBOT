@@ -20,9 +20,10 @@
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
     "pino": "^7.2.0",
-    "sequelize": "^6.9.0",
-    "sqlite3": "^5.0.2",
     "util": "^0.12.4",
     "ytdl-core": "^4.9.1"
+  },
+  "devDependencies": {
+    "eslint": "^8.5.0"
   }
 }
