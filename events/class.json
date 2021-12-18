@@ -1,9 +1,15 @@
 {
-    "refresh": "Dev",
-    "cmds": "Info",
-    "bi": "Info",
-    "play": "Music",
-    "turtle-soup": "Turtle Soup",
-    "ping": "Dev",
-    "together": "Together"
+    "cmds": {
+        "refresh": "Dev",
+        "cmds": "Info",
+        "bi": "Info",
+        "play": "Music",
+        "turtle-soup": "Turtle Soup",
+        "ping": "Dev",
+        "together": "Together"
+    },
+    "btns": {},
+    "menus": {
+        "Toge": "together"
+    }
 }

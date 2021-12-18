@@ -9,19 +9,19 @@ const r = new REST({ version: '9' }).setToken(token);
 const refresh = () => {
     const cmds = [];
     const testCmds = [];
-    const cmdDirs = readdirSync('./events/commands');
-    for (const dir of cmdDirs) {
-        const cmdFiles = readdirSync(`./events/commands/${dir}`).filter(f => f.endsWith('.js'));
-        for (const file of cmdFiles) {
-            delete require.cache[join(__dirname, 'events', 'commands', dir, file)];
-            const cmd = require(`./events/commands/${dir}/${file}`);
+    const cmdFiles = readdirSync(join(__dirname, 'events', 'commands')).filter(f => f.endsWith('.js'));
+    for (const file of cmdFiles) {
+        delete require.cache[join(__dirname, 'events', 'commands', file)];
+        const importedCmds = require(`./events/commands/${file}`);
+        for (const cmdName in importedCmds) {
+            const cmd = importedCmds[cmdName];
             if (cmd.off) continue;
             if (cmd.test) {
                 testCmds.push(cmd.data.toJSON());
-                logger.info(`refresh:Pushed testing command ${file.replace('.js', '')}`);
+                logger.info(`refresh:Pushed testing command ${cmdName}`);
             } else {
                 cmds.push(cmd.data.toJSON());
-                logger.info(`refresh:Pushed command ${file.replace('.js', '')}`);
+                logger.info(`refresh:Pushed command ${cmdName}`);
             }
         }
     }

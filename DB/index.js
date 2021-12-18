@@ -1,8 +1,9 @@
 const { readFileSync, writeFileSync } = require('fs');
 const copyObj = (obj, proto = null) => {
     if (typeof obj !== 'object' || obj === null) return obj;
-    const copiedObj = Object.create(typeof proto === 'object' && proto !== null ? proto : Reflect.getPrototypeOf(obj));
-    for (const prop in obj) copiedObj[prop] = copyObj(obj[prop]);
+    proto = typeof proto === 'object' && proto !== null ? proto : Reflect.getPrototypeOf(obj);
+    const copiedObj = Object.create(proto);
+    for (const prop in obj) copiedObj[prop] = copyObj(obj[prop], proto);
     return copiedObj;
 };
 const createProxyBind = (parent, child, propName) => {
@@ -39,3 +40,4 @@ const dbWrapper = filePath => {
     });
 };
 module.exports = dbWrapper;
+module.exports.copyObj = copyObj;
