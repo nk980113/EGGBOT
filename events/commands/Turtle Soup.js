@@ -18,11 +18,11 @@ module.exports = {
                 ],
                 components: [
                     new MessageActionRow()
-                        .addComponents(require('../../../btnTemp/Soup/Sfnd'))
-                        .addComponents(require('../../../btnTemp/Soup/Sall'))
-                        .addComponents(require('../../../btnTemp/Soup/Smod'))
-                        .addComponents(require('../../../btnTemp/Soup/Shlp'))
-                        .addComponents(require('../../../btnTemp/Soup/Slve')),
+                        .addComponents(require('../../btnTemp/Soup/Sfnd'))
+                        .addComponents(require('../../btnTemp/Soup/Sall'))
+                        .addComponents(require('../../btnTemp/Soup/Smod'))
+                        .addComponents(require('../../btnTemp/Soup/Shlp'))
+                        .addComponents(require('../../btnTemp/Soup/Slve')),
                 ],
             });
         },

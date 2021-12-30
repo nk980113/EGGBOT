@@ -7,7 +7,7 @@ module.exports = {
     bi: {
         data: new SlashCommandBuilder().setName('bi').setDescription('查看機器人的資訊'),
         async do(cmd) {
-            const package = require('../../../package.json');
+            const package = require('../../package.json');
             await cmd.deferReply();
             await sleep(500);
             //                                                                                官網: https://sites.google.com/view/eggbotsblogger

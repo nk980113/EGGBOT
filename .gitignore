@@ -2,6 +2,7 @@ node_modules/
 .gitattributes
 token.json
 intents.txt
-log.json
+log.txt
 DB/db.sqlite
 DB/temp.js
+test.js

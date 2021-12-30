@@ -1,7 +1,7 @@
-const { pino } = require('pino');
-const transport = pino.transport({
+const { pino, transport } = require('pino');
+const logger = pino(transport({
     target: 'pino/file',
-    options: { destination: './log.json' },
-});
-const logger = pino(transport);
+    options: { destination: './log.txt' },
+}));
+
 module.exports = logger;
