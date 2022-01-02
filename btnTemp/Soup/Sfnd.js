@@ -1,5 +1,5 @@
 const { MessageButton } = require('discord.js');
-module.exports = 
+module.exports =
     new MessageButton()
         .setCustomId('Sfnd')
         .setLabel('搜尋海龜湯')
