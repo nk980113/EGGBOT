@@ -7,9 +7,17 @@
         "turtle-soup": "Turtle Soup",
         "ping": "Dev",
         "together": "Together",
-        "report": "Dev"
+        "report": "Dev",
+        "save": "Data",
+        "delete": "Data"
     },
-    "btns": {},
+    "btns": {
+        "Sall": "Soup",
+        "Sfnd": "Soup",
+        "Shlp": "Soup",
+        "Slve": "Soup",
+        "Smod": "Soup"
+    },
     "menus": {
         "Toge": "together"
     }

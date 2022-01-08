@@ -1,7 +1,7 @@
 const { MessageButton } = require('discord.js');
-module.exports =
+module.exports = userId =>
     new MessageButton()
-        .setCustomId('Smod')
+        .setCustomId(`Smod ${userId}`)
         .setLabel('管理海龜湯')
         .setStyle('SUCCESS')
         .setDisabled(true);

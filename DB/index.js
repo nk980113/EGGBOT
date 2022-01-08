@@ -18,4 +18,5 @@ class DB {
     }
 }
 
+DB.dirPath = __dirname;
 module.exports = DB;

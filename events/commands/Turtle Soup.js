@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow } = require('discord.js');
 module.exports = {
-    ['turtle-soup']: {
+    'turtle-soup': {
         data: new SlashCommandBuilder().setName('turtle-soup').setDescription('開啟海龜湯系統的大門'),
         test: true,
         /**
@@ -18,11 +18,11 @@ module.exports = {
                 ],
                 components: [
                     new MessageActionRow()
-                        .addComponents(require('../../btnTemp/Soup/Sfnd'))
-                        .addComponents(require('../../btnTemp/Soup/Sall'))
-                        .addComponents(require('../../btnTemp/Soup/Smod'))
-                        .addComponents(require('../../btnTemp/Soup/Shlp'))
-                        .addComponents(require('../../btnTemp/Soup/Slve')),
+                        .addComponents(require('../../btnTemp/Soup/Sfnd')(cmd.user.id))
+                        .addComponents(require('../../btnTemp/Soup/Sall')(cmd.user.id))
+                        .addComponents(require('../../btnTemp/Soup/Smod')(cmd.user.id))
+                        .addComponents(require('../../btnTemp/Soup/Shlp')(cmd.user.id))
+                        .addComponents(require('../../btnTemp/Soup/Slve')(cmd.user.id)),
                 ],
             });
         },

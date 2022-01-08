@@ -1,7 +1,7 @@
 const { MessageButton } = require('discord.js');
-module.exports =
+module.exports = userId =>
     new MessageButton()
-        .setCustomId('Sfnd')
+        .setCustomId(`Sfnd ${userId}`)
         .setLabel('搜尋海龜湯')
         .setStyle('SECONDARY')
         .setDisabled(true);

@@ -1,7 +1,7 @@
 const { MessageButton } = require('discord.js');
-module.exports =
+module.exports = userId =>
     new MessageButton()
-        .setCustomId('Slve')
+        .setCustomId(`Slve ${userId}`)
         .setLabel('離開')
         .setStyle('DANGER')
         .setDisabled(true);
