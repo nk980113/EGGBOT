@@ -1,7 +1,7 @@
 const { readdirSync } = require('fs');
 const { join } = require('path');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { guildId } = require('../../config.json');
+const { guildId } = require('../../setup/config.json');
 const sleep = require('util').promisify(setTimeout);
 module.exports = {
     bi: {

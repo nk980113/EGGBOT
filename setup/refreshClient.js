@@ -1,14 +1,14 @@
 const { readdirSync } = require('fs');
 const { join } = require('path');
-const logger = require('./logger');
+const logger = require('../logger');
 
 const refreshClient = client => {
     client.removeAllListeners();
-    const events = readdirSync('./events');
+    const events = readdirSync(join(__dirname, '..', 'events'));
     for (const file of events) {
         if (!file.endsWith('.js')) continue;
-        delete require.cache[join(__dirname, 'events', file)];
-        const event = require(`./events/${file}`);
+        delete require.cache[join(__dirname, '..', 'events', file)];
+        const event = require(`../events/${file}`);
         if (event.once) {
             event.do.forEach(f => {
                 client.once(event.name, (...args) => f(...args));

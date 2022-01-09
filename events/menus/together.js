@@ -1,11 +1,21 @@
 const { DiscordTogether } = require('discord-together');
-const together = menu => {
+const sleep = require('util').promisify(setTimeout);
+const together = async menu => {
     menu.message.delete();
-    if (menu.values.includes('leave')) return menu.message.channel.send('881').then(s => setTimeout(s.delete, 1000));
+    if (menu.values.includes('leave')) {
+        const msg = await menu.message.channel.send('881');
+        await sleep(1000);
+        return msg.delete();
+    }
     const { member: { voice: { channelId: id } }, values: { [0]: c } } = menu;
-    if ((typeof id === 'object') || (typeof id === 'undefined')) return menu.message.channel.send('給我悔過，重新使用指令！連讓我發揮的機會都沒有...').then(s => setTimeout(s.delete, 1000));
+    if ((typeof id === 'object') || (typeof id === 'undefined')) {
+        const msg = await menu.message.channel.send('給我悔過，重新使用指令！連讓我發揮的機會都沒有...');
+        await sleep(1000);
+        return msg.delete();
+    }
     const dcTogether = new DiscordTogether(menu.client);
-    dcTogether.createTogetherCode(id, c).then(async ({ code }) => menu.message.channel.send(code));
+    const { code } = await dcTogether.createTogetherCode(id, c);
+    menu.message.channel.send(code);
     return;
 };
 module.exports = together;

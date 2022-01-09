@@ -1,4 +1,4 @@
-const logger = require('./logger');
+const logger = require('../logger');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
 const { token } = require('./token.json');
@@ -9,10 +9,10 @@ const r = new REST({ version: '9' }).setToken(token);
 const refresh = () => {
     const cmds = [];
     const testCmds = [];
-    const cmdFiles = readdirSync(join(__dirname, 'events', 'commands')).filter(f => f.endsWith('.js'));
+    const cmdFiles = readdirSync(join(__dirname, '..', 'events', 'commands')).filter(f => f.endsWith('.js'));
     for (const file of cmdFiles) {
-        delete require.cache[join(__dirname, 'events', 'commands', file)];
-        const importedCmds = require(`./events/commands/${file}`);
+        delete require.cache[join(__dirname, '..', 'events', 'commands', file)];
+        const importedCmds = require(`../events/commands/${file}`);
         for (const cmdName in importedCmds) {
             const cmd = importedCmds[cmdName];
             if (cmd.off) continue;

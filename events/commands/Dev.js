@@ -12,7 +12,7 @@ module.exports = {
         data: new SlashCommandBuilder().setName('refresh').setDescription('Owner only command'),
         ownerOnly: true,
         do(cmd) {
-            require('../../refreshClient')(cmd.client);
+            require('../../setup/refreshClient')(cmd.client);
             cmd.reply('成功整理斜線指令');
         },
     },
@@ -29,8 +29,8 @@ module.exports = {
          */
         async do(cmd) {
             const txt = cmd.options.getString('text');
-            cmd.client.channels.cache.get(require('../../config.json').reportChannelId).send({
-                content: `<@!${require('../../config.json').ownerId}>`,
+            cmd.client.channels.cache.get(require('../../setup/config.json').reportChannelId).send({
+                content: `<@!${require('../../setup/config.json').ownerId}>`,
                 embeds: [
                     new MessageEmbed()
                         .setColor('RED')
