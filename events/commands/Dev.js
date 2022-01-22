@@ -41,4 +41,29 @@ module.exports = {
             cmd.reply({ content: '成功回報', ephemeral: true });
         },
     },
+    suggest: {
+        data: new SlashCommandBuilder()
+            .setName('suggest')
+            .setDescription('發送建議到伺服器')
+            .addStringOption(op => op
+                .setName('text')
+                .setDescription('欲建議的事項')
+                .setRequired(true)),
+        /**
+         * @param {import('discord.js').CommandInteraction} cmd
+         */
+        async do(cmd) {
+            const txt = cmd.options.getString('text');
+            cmd.client.channels.cache.get(require('../../setup/config.json').suggestChannelId).send({
+                content: `<@!${require('../../setup/config.json').ownerId}>`,
+                embeds: [
+                    new MessageEmbed()
+                        .setColor('GOLD')
+                        .setTitle('建議')
+                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${txt}${'```'}`),
+                ],
+            });
+            cmd.reply({ content: '成功建議', ephemeral: true });
+        },
+    },
 };

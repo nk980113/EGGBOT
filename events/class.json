@@ -9,7 +9,8 @@
         "together": "Together",
         "report": "Dev",
         "save": "Data",
-        "delete": "Data"
+        "delete": "Data",
+        "suggest": "Dev"
     },
     "btns": {
         "Sall": "Soup",

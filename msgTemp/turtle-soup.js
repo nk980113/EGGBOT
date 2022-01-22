@@ -10,7 +10,7 @@ module.exports = userId => ({
     components: [
         new MessageActionRow()
             .addComponents(require('../btnTemp/Soup/Sfnd')(userId))
-            .addComponents(require('../btnTemp/Soup/Sall')(userId))
+            .addComponents(require('../btnTemp/Soup/Sall')(userId, 0))
             .addComponents(require('../btnTemp/Soup/Smod')(userId, 0))
             .addComponents(require('../btnTemp/Soup/Shlp')(userId)),
     ],

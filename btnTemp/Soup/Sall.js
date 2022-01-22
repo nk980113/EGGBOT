@@ -1,7 +1,6 @@
 const { MessageButton } = require('discord.js');
-module.exports = userId =>
+module.exports = (userId, pg) =>
     new MessageButton()
-        .setCustomId(`Sall ${userId}`)
+        .setCustomId(`Sall ${userId} ${pg}`)
         .setLabel('查看所有海龜湯')
-        .setStyle('PRIMARY')
-        .setDisabled(true);
+        .setStyle('PRIMARY');

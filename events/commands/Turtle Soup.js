@@ -12,7 +12,6 @@ module.exports = {
             cmd.reply({
                 ...require('../../msgTemp/turtle-soup')(cmd.user.id),
                 content: '模式參照 [GS遊戲學校](http://gameschool.cc/) ，在這邊要跟站長Pheion說聲抱歉了~',
-                ephemeral: true,
             });
         },
     },

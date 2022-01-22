@@ -19,7 +19,7 @@ const argParser = (id) => {
  */
 const handleFuncs = {
     Shlp(btn) {
-        btn.reply({
+        btn.update({
             ephemeral: true,
             embeds: [
                 new MessageEmbed()
@@ -39,7 +39,7 @@ const handleFuncs = {
         });
     },
     Shal(btn) {
-        btn.reply({
+        btn.update({
             ...require('../../msgTemp/turtle-soup')(btn.user.id),
             ephemeral: true,
         });
@@ -55,16 +55,42 @@ const handleFuncs = {
         else questions.filter((_, i) => i >= pg * 10 && i < (pg + 1) * 10).forEach(q => {
             embed.addField(`#${q.id} ${q.title}`, q.content.length <= 20 ? q.content : q.content.slice(0, 19) + '...');
         });
-        const totalPg = `共${Math.ceil(questions.length / 10)}頁`;
+        const totalPg = `共${Math.ceil(questions.length / 10)}頁，這是第${+pg + 1}頁`;
         embed.setFooter({ text: totalPg });
-        btn.reply({
+        btn.update({
             embeds: [embed],
             ephemeral: true,
             components: [
                 ...require('../../btnTemp/Row/1-10')('Sque', btn.user.id, '', questions.length - pg * 10 >= 10 ? 11 : questions.length - pg * 10 + 1),
                 new MessageActionRow()
                     .addComponents(new MessageButton().setStyle('PRIMARY').setCustomId(`Smod ${btn.user.id} ${pg - 1}`).setLabel('<').setDisabled(!+pg))
-                    .addComponents(new MessageButton().setStyle('PRIMARY').setCustomId(`Smod ${btn.user.id} ${pg + 1}`).setLabel('>').setDisabled(questions.length - (+pg + 1) * 10 <= 0)),
+                    .addComponents(new MessageButton().setStyle('PRIMARY').setCustomId(`Smod ${btn.user.id} ${pg + 1}`).setLabel('>').setDisabled(questions.length - (+pg + 1) * 10 <= 0))
+                    .addComponents(require('../../btnTemp/Soup/Shal')(btn.user.id)),
+            ],
+        });
+    },
+    Sall(btn, pg) {
+        const quesDB = new DB(join(soupDirPath, 'questions.json'));
+        const questions = Object.keys(quesDB.data).map(k => quesDB.data[k]).sort((a, b) => b.id - a.id);
+        const embed = new MessageEmbed;
+        embed
+            .setColor('NOT_QUITE_BLACK')
+            .setTitle('所有海龜湯');
+        if (!questions.length && !pg) embed.addField('這裡空空如也', '看看門口的招牌，你是不是走錯餐廳了？');
+        else questions.filter((_, i) => i >= pg * 10 && i < (pg + 1) * 10).forEach(q => {
+            embed.addField(`#${q.id} ${q.title}`, q.content.length <= 20 ? q.content : q.content.slice(0, 19) + '...');
+        });
+        const totalPg = `共${Math.ceil(questions.length / 10)}頁，這是第${+pg + 1}頁`;
+        embed.setFooter({ text: totalPg });
+        btn.update({
+            embeds: [embed],
+            ephemeral: true,
+            components: [
+                ...require('../../btnTemp/Row/1-10')('Sque', btn.user.id, '', questions.length - pg * 10 >= 10 ? 11 : questions.length - pg * 10 + 1),
+                new MessageActionRow()
+                    .addComponents(new MessageButton().setStyle('PRIMARY').setCustomId(`Sall ${btn.user.id} ${pg - 1}`).setLabel('<').setDisabled(!+pg))
+                    .addComponents(new MessageButton().setStyle('PRIMARY').setCustomId(`Sall ${btn.user.id} ${pg + 1}`).setLabel('>').setDisabled(questions.length - (+pg + 1) * 10 <= 0))
+                    .addComponents(require('../../btnTemp/Soup/Shal')(btn.user.id)),
             ],
         });
     },
