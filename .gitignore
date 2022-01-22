@@ -3,6 +3,7 @@ node_modules/
 token.json
 intents.txt
 log.txt
-DB/db.sqlite
+DB/data.json
+DB/Soup/questions.json
 test.js
 test.json
