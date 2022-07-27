@@ -22,20 +22,23 @@
                 "allowSingleLine": true 
             }
         ],
-		"comma-dangle": [
+        "comma-dangle": [
             "error", 
             "always-multiline"
         ],
-		"comma-spacing": "error",
-		"comma-style": "error",
-		"dot-location": [
+        "comma-spacing": "error",
+        "comma-style": "error",
+        "dot-location": [
             "error", 
             "property"
         ],
-		"handle-callback-err": "off",
+        "handle-callback-err": "off",
         "indent": [
             "error",
-            4
+            4,
+            {
+                "SwitchCase": 1
+            }
         ],
         "keyword-spacing": "error",
         "linebreak-style": [
@@ -48,19 +51,19 @@
                 "max": 4 
             }
         ],
-		"max-statements-per-line": [
+        "max-statements-per-line": [
             "error", 
             { 
                 "max": 2 
             }
         ],
-		"no-console": "off",
-		"no-empty-function": "error",
-		"no-floating-decimal": "error",
-		"no-inline-comments": "error",
-		"no-lonely-if": "error",
-		"no-multi-spaces": "error",
-		"no-multiple-empty-lines": [
+        "no-console": "off",
+        "no-empty-function": "error",
+        "no-floating-decimal": "error",
+        "no-inline-comments": "error",
+        "no-lonely-if": "error",
+        "no-multi-spaces": "error",
+        "no-multiple-empty-lines": [
             "error",
             { 
                 "max": 2, 
@@ -68,7 +71,7 @@
                 "maxBOF": 0 
             }
         ],
-		"no-shadow": [
+        "no-shadow": [
             "error", 
             { 
                 "allow": [
@@ -78,13 +81,13 @@
                 ] 
             }
         ],
-		"no-trailing-spaces": ["error"],
-		"no-var": "error",
-		"object-curly-spacing": [
+        "no-trailing-spaces": ["error"],
+        "no-var": "error",
+        "object-curly-spacing": [
             "error", 
             "always"
         ],
-		"prefer-const": "error",
+        "prefer-const": "error",
         "quotes": [
             "error",
             "single"
@@ -94,7 +97,7 @@
             "always"
         ],
         "space-before-blocks": "error",
-		"space-before-function-paren": [
+        "space-before-function-paren": [
             "error", 
             {
                 "anonymous": "never",
@@ -102,10 +105,10 @@
                 "asyncArrow": "always"
             }
         ],
-		"space-in-parens": "error",
-		"space-infix-ops": "error",
-		"space-unary-ops": "error",
-		"spaced-comment": "error",
-		"yoda": "error"
+        "space-in-parens": "error",
+        "space-infix-ops": "error",
+        "space-unary-ops": "error",
+        "spaced-comment": "error",
+        "yoda": "error"
     }
 }

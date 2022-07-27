@@ -1,4 +1,6 @@
 module.exports = {
     name: 'debug',
-    do: [console.log],
+    do: [
+        /* console.log, */
+    ],
 };

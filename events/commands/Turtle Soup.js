@@ -5,6 +5,7 @@ module.exports = {
             .setName('turtle-soup')
             .setDescription('開啟海龜湯系統的大門'),
         test: true,
+        off: true,
         /**
          * @param {import('discord.js').CommandInteraction} cmd
          */

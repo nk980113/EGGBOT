@@ -12,6 +12,7 @@ module.exports = userId => ({
             .addComponents(require('../btnTemp/Soup/Sfnd')(userId))
             .addComponents(require('../btnTemp/Soup/Sall')(userId, 0))
             .addComponents(require('../btnTemp/Soup/Smod')(userId, 0))
-            .addComponents(require('../btnTemp/Soup/Shlp')(userId)),
+            .addComponents(require('../btnTemp/Soup/Shlp')(userId))
+            .addComponents(require('../btnTemp/Gdel')(userId)),
     ],
 });

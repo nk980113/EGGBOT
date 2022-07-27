@@ -10,17 +10,10 @@
         "report": "Dev",
         "save": "Data",
         "delete": "Data",
-        "suggest": "Dev"
+        "suggest": "Dev",
+        "check": "Data"
     },
     "btns": {
-        "Sall": "Soup",
-        "Sfnd": "Soup",
-        "Shlp": "Soup",
-        "Smod": "Soup",
-        "Shal": "Soup",
-        "Sadq": "Soup"
-    },
-    "menus": {
-        "Toge": "together"
+        "Gdel": "General"
     }
 }

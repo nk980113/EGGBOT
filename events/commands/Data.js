@@ -49,4 +49,23 @@ module.exports = {
             cmd.reply({ content: `成功刪除在位址${i}的內容${val}`, ephemeral: true });
         },
     },
+    check: {
+        data: new SlashCommandBuilder()
+            .setName('check')
+            .setDescription('查看資料庫中的資料')
+            .addNumberOption(op => op
+                .setName('index')
+                .setDescription('資料位址')
+                .setRequired(true)),
+        /**
+         * @param {import('discord.js').CommandInteraction} cmd
+         */
+        do(cmd) {
+            const data = new DB(join(DB.dirPath, 'data.json')).data;
+            const i = cmd.options.getNumber('index');
+            if (!data[i]) return cmd.reply('尷尬，資料庫好像沒這東西');
+            if (data[i].userId !== cmd.user.id) return cmd.reply('銀行會讓你查看別人的存款嗎？');
+            cmd.reply({ content: `位址：${i}\n內容：${data[i].value}`, ephemeral: true });
+        },
+    },
 };
