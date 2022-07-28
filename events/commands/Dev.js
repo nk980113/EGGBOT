@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed, Util } = require('discord.js');
 module.exports = {
     ping: {
         data: new SlashCommandBuilder().setName('ping').setDescription('測量機器人的延遲'),
@@ -35,7 +35,7 @@ module.exports = {
                     new MessageEmbed()
                         .setColor('RED')
                         .setTitle('錯誤回報')
-                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${txt}${'```'}`),
+                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${Util.escapeMarkdown(txt)}${'```'}`),
                 ],
             });
             cmd.reply({ content: '成功回報', ephemeral: true });
@@ -60,7 +60,7 @@ module.exports = {
                     new MessageEmbed()
                         .setColor('GOLD')
                         .setTitle('建議')
-                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${txt}${'```'}`),
+                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${Util.escapeMarkdown(txt)}${'```'}`),
                 ],
             });
             cmd.reply({ content: '成功建議', ephemeral: true });
