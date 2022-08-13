@@ -1,17 +1,13 @@
 {
     "cmds": {
         "refresh": "Dev",
-        "cmds": "Info",
-        "bi": "Info",
-        "play": "Music",
+        "commands": "Info",
+        "botinfo": "Info",
         "turtle-soup": "Turtle Soup",
         "ping": "Dev",
         "together": "Together",
         "report": "Dev",
-        "save": "Data",
-        "delete": "Data",
-        "suggest": "Dev",
-        "check": "Data"
+        "suggest": "Dev"
     },
     "btns": {
         "Gdel": "General"

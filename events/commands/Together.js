@@ -3,7 +3,7 @@ const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { DiscordTogether } = require('discord-together');
 module.exports = {
     together: {
-        data: new SlashCommandBuilder().setName('together').setDescription('使用discord-together套件提供的功能'),
+        data: new SlashCommandBuilder().setName('together').setDescription('在伺服器中開啟活動'),
         test: true,
         /**
          * @param {import('discord.js').CommandInteraction} cmd
@@ -30,6 +30,11 @@ module.exports = {
                                     label: '西洋棋',
                                     description: '來玩有點西洋味兒的東西',
                                     value: 'chess',
+                                },
+                                {
+                                    label: '噗。克牌',
+                                    description: '當個賭徒怎麼樣',
+                                    value: 'poker',
                                 },
                                 {
                                     label: '離開',

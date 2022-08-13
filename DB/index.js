@@ -1,6 +1,9 @@
 const { readFileSync, writeFileSync } = require('fs');
 
 class DB {
+
+    static dirPath = __dirname;
+
     /**
      * @param {string} dbPath
      */
@@ -18,5 +21,4 @@ class DB {
     }
 }
 
-DB.dirPath = __dirname;
 module.exports = DB;
