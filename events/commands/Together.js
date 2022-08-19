@@ -3,7 +3,7 @@ const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { DiscordTogether } = require('discord-together');
 module.exports = {
     together: {
-        data: new SlashCommandBuilder().setName('together').setDescription('在伺服器中開啟活動'),
+        data: new SlashCommandBuilder().setDescription('在伺服器中開啟活動'),
         test: true,
         /**
          * @param {import('discord.js').CommandInteraction} cmd

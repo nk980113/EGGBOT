@@ -5,7 +5,7 @@ const { token } = require('./token.json');
 const { clientId, guildId } = require('./config.json');
 const { readdirSync } = require('fs');
 const { join } = require('path');
-const r = new REST({ version: '9' }).setToken(token);
+const r = new REST({ version: '10' }).setToken(token);
 const refresh = () => {
     const cmds = [];
     const testCmds = [];
@@ -17,10 +17,10 @@ const refresh = () => {
             const cmd = importedCmds[cmdName];
             if (cmd.off) continue;
             if (cmd.test) {
-                testCmds.push(cmd.data.toJSON());
+                testCmds.push(cmd.data.setName(cmdName).toJSON());
                 logger.info(`refresh:Pushed testing command ${cmdName}`);
             } else {
-                cmds.push(cmd.data.toJSON());
+                cmds.push(cmd.data.setName(cmdName).toJSON());
                 logger.info(`refresh:Pushed command ${cmdName}`);
             }
         }

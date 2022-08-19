@@ -49,7 +49,7 @@ module.exports = async function help(oldBtn) {
         },
         time: 120_000,
     }).catch(() => {
-        msg.edit({ components: [{ type: 'ACTION_ROW', components: msg.components[0].components.map((btn) => btn.disabled = true) }] });
+        msg.edit({ type: 'ACTION_ROW', components: [{ components: msg.components[0].components.map((btn) => btn.disabled = true) }] });
     });
     if (!receivedBtn) return;
     await lazyLoadHall()(receivedBtn);

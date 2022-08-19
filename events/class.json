@@ -7,7 +7,8 @@
         "ping": "Dev",
         "together": "Together",
         "report": "Dev",
-        "suggest": "Dev"
+        "suggest": "Dev",
+        "shutdown": "Dev"
     },
     "btns": {
         "Gdel": "General"
