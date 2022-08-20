@@ -2,6 +2,8 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageActionRow, MessageSelectMenu } = require('discord.js');
 const { DiscordTogether } = require('discord-together');
 module.exports = {
+    name: '伺服器活動',
+    description: '在伺服器開啟活動',
     together: {
         data: new SlashCommandBuilder().setDescription('在伺服器中開啟活動'),
         test: true,

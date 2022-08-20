@@ -14,6 +14,7 @@ const refresh = () => {
         delete require.cache[join(__dirname, '..', 'events', 'commands', file)];
         const importedCmds = require(`../events/commands/${file}`);
         for (const cmdName in importedCmds) {
+            if (['name', 'description'].includes(cmdName)) continue;
             const cmd = importedCmds[cmdName];
             if (cmd.off) continue;
             if (cmd.test) {

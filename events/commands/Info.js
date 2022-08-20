@@ -1,9 +1,10 @@
 const { readdirSync } = require('fs');
-const { join } = require('path');
 const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { guildId } = require('../../setup/config.json');
 module.exports = {
+    name: '資訊',
+    description: '關於機器人各種資訊的指令',
     botinfo: {
         data: new SlashCommandBuilder().setDescription('查看機器人的資訊'),
         async do(cmd) {
@@ -45,22 +46,53 @@ module.exports = {
         },
     },
     commands: {
-        data: new SlashCommandBuilder().setDescription('查看所有指令'),
+        data: new SlashCommandBuilder().setDescription('查看所有類別/指令')
+            .addStringOption(op => op
+                .setName('category')
+                .setDescription('要查詢的類別代號(若無則顯示所有類別)')
+                .setRequired(false)
+                .addChoices(...readdirSync(__dirname).filter(f => f.endsWith('.js')).map((i) => ({ name: i.replace('.js', ''), value: i.replace('.js', '') })))),
+        /** @param {import('discord.js').CommandInteraction} cmd */
         do(cmd) {
-            let cmdsStr = '';
-            const cmdFiles = readdirSync(__dirname).filter(f => f.endsWith('.js'));
-            for (const file of cmdFiles) {
-                cmdsStr += `\`\`\`${file.replace('.js', '')}\`\`\`\n`;
-                delete require.cache[join(__dirname, file)];
-                const importedCmds = require(`./${file}`);
-                for (const cmdName in importedCmds) {
-                    const importedCmd = importedCmds[cmdName];
-                    if (importedCmd.off) continue;
-                    if (!importedCmd.test || cmd.guildId == guildId) cmdsStr += `\`${cmdName}\` `;
+            const catName = cmd.options.getString('category');
+            if (!catName) {
+                const embed = {
+                    title: '所有指令類別',
+                    description: '冒號前為類別代號，冒號後為名稱',
+                    color: 'RANDOM',
+                    fields: [],
+                };
+                const cmdFiles = readdirSync(__dirname).filter(f => f.endsWith('.js'));
+                for (const file of cmdFiles) {
+                    const rawCat = require(`./${file}`);
+                    const cmds = Object.keys(rawCat).filter((k) => !['name', 'description'].includes(k));
+                    const availableCmds = cmd.guildId === guildId ? cmds.filter((k) => !rawCat[k].off) : cmds.filter((k) => !rawCat[k].off && !rawCat[k].test);
+                    embed.fields.push({
+                        inline: true,
+                        name: `${file.replace('.js', '')}：${rawCat.name}`,
+                        value: `${rawCat.description}\n在${cmd.guild ? '此伺服器' : '私訊'}中共${availableCmds.length}條可用指令`,
+                    });
                 }
-                cmdsStr += '\n';
+                cmd.reply({ embeds: [embed] });
+            } else {
+                const rawCat = require(`./${catName}`);
+                const cmds = Object.keys(rawCat).filter((k) => !['name', 'description'].includes(k));
+                const availableCmds = cmd.guildId === guildId ? cmds.filter((k) => !rawCat[k].off) : cmds.filter((k) => !rawCat[k].off && !rawCat[k].test);
+                const embed = {
+                    title: `${rawCat.name}類別(${catName})`,
+                    description: `${rawCat.description}\n在${cmd.guild ? '私訊' : '此伺服器'}中共${availableCmds.length}條可用指令`,
+                    color: 'RANDOM',
+                    fields: [],
+                };
+                for (const slashCmd of availableCmds) {
+                    embed.fields.push({
+                        inline: true,
+                        name: `/${slashCmd}`,
+                        value: rawCat[slashCmd].data.description,
+                    });
+                }
+                cmd.reply({ embeds: [embed] });
             }
-            cmd.reply(cmdsStr);
         },
     },
 };

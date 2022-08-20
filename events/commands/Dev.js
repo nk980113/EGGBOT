@@ -2,6 +2,8 @@ const { setTimeout } = require('node:timers');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, Util } = require('discord.js');
 module.exports = {
+    name: '開發者事項',
+    description: '關於機器人開發的一些指令',
     ping: {
         data: new SlashCommandBuilder().setDescription('測量機器人的延遲'),
         async do(cmd) {
