@@ -80,7 +80,7 @@ module.exports = {
                 const availableCmds = cmd.guildId === guildId ? cmds.filter((k) => !rawCat[k].off) : cmds.filter((k) => !rawCat[k].off && !rawCat[k].test);
                 const embed = {
                     title: `${rawCat.name}類別(${catName})`,
-                    description: `${rawCat.description}\n在${cmd.guild ? '私訊' : '此伺服器'}中共${availableCmds.length}條可用指令`,
+                    description: `${rawCat.description}\n在${cmd.guild ? '此伺服器' : '私訊'}中共${availableCmds.length}條可用指令`,
                     color: 'RANDOM',
                     fields: [],
                 };
