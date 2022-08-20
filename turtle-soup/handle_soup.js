@@ -59,7 +59,10 @@ module.exports = async function handleSoup(cmd) {
         },
         time: 120_000,
     }).catch(() => {
-        msg.edit({ components: [{ type: 'ACTION_ROW', components: msg.components[0].components.map((btn) => btn.disabled = true) }] });
+        msg.edit({ components: [{ type: 'ACTION_ROW', components: msg.components[0].components.map((btn) => {
+            btn.disabled = true;
+            return btn;
+        }) }] });
     });
     if (!receivedBtn) return;
     switch (receivedBtn.customId) {
