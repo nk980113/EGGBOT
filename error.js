@@ -19,7 +19,7 @@ module.exports = (client, e) => {
             })
             .setFields({
                 name: '錯誤堆疊',
-                value: e?.stack ?? '被Wampus當蛋糕吃掉了',
+                value: `\`\`\`${e?.stack}\`\`\`` ?? '被Wampus當蛋糕吃掉了',
             }),
         ],
     });

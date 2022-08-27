@@ -3,7 +3,6 @@ node_modules/
 token.json
 intents.txt
 log.txt
-DB/data.json
-DB/Soup/questions.json
 test.js
 test.json
+setup/google_credentials.json
