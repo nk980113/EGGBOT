@@ -44,7 +44,6 @@ module.exports = async function handleSoup(cmd) {
                 customId: 'leave',
                 label: '離開',
                 style: 'DANGER',
-                disabled: true,
             },
         ] }],
         content: '模式參照 [GS遊戲學校](http://gameschool.cc/) ，在這邊要跟站長Pheion說聲抱歉了~',
@@ -69,6 +68,14 @@ module.exports = async function handleSoup(cmd) {
     switch (receivedBtn.customId) {
         case 'help': {
             await help(receivedBtn);
+            break;
+        }
+
+        case 'leave': {
+            await receivedBtn.update({ content: '881', components: [], embeds: [{
+                title: '成功離開',
+                color: 'RED',
+            }], fetchReply: true }).then((m) => setTimeout(() => m.delete(), 1_000));
         }
     }
 };
