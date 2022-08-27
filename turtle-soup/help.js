@@ -1,4 +1,5 @@
-const { join } = require('path');
+const resolveImport = require('./resolveImport');
+const hall = resolveImport('./hall');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -55,15 +56,5 @@ module.exports = async function help(oldBtn) {
         }) }] });
     });
     if (!receivedBtn) return;
-    await lazyLoadHall()(receivedBtn);
+    await hall(receivedBtn);
 };
-
-let hall;
-
-function lazyLoadHall() {
-    if (!hall) {
-        delete require.cache[join(__dirname, 'hall')];
-        hall = require('./hall');
-    }
-    return hall;
-}

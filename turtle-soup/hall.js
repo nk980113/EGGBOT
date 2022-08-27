@@ -1,4 +1,5 @@
-const help = require('./help');
+const resolveImport = require('./resolveImport');
+const help = resolveImport('./help');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn

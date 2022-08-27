@@ -1,12 +1,8 @@
 const { google } = require('googleapis');
 const { join } = require('node:path');
+const { setInterval } = require('node:timers');
 
 class DB {
-    #sheetId;
-    #subSheet;
-    #keys;
-    #entries = [];
-
     static #auth = new google.auth.GoogleAuth({
         keyFile: join(__dirname, '..', 'setup', 'google_credentials.json'),
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -20,6 +16,21 @@ class DB {
             this.#googleSheet = google.sheets({ version: 'v4', auth: this.#authClient }).spreadsheets;
         })();
     }
+    static #allInstances = [];
+    static {
+        setInterval(() => {
+            this.forceSaveAll();
+        }, 30_000).unref();
+    }
+
+    static forceSaveAll() {
+        return Promise.all(this.#allInstances.map((s) => s.save()));
+    }
+
+    #sheetId;
+    #subSheet;
+    #keys;
+    #entries = [];
 
     constructor({
         sheetId,
@@ -29,6 +40,7 @@ class DB {
         this.#sheetId = sheetId;
         this.#subSheet = subSheet;
         this.#keys = keys;
+        DB.#allInstances.push(this);
         this.sync();
     }
 

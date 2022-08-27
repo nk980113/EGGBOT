@@ -1,6 +1,7 @@
 const { setTimeout } = require('node:timers');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, Util } = require('discord.js');
+const DB = require('../../DB');
 module.exports = {
     name: '開發者事項',
     description: '關於機器人開發的一些指令',
@@ -22,7 +23,8 @@ module.exports = {
     shutdown: {
         data: new SlashCommandBuilder().setDescription('Owner only command'),
         ownerOnly: true,
-        do(cmd) {
+        async do(cmd) {
+            await DB.forceSaveAll();
             cmd.reply('機器人將在三秒後下線');
             setTimeout(() => {
                 cmd.client.destroy();
