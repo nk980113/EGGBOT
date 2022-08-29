@@ -1,5 +1,6 @@
 const resolveImport = require('./resolveImport');
 const help = resolveImport('./help');
+const mod = resolveImport('./mod');
 
 /**
  * @param {import('discord.js').CommandInteraction} cmd
@@ -9,7 +10,7 @@ module.exports = async function handleSoup(cmd) {
         embeds: [{
             color: 'GREEN',
             title: '海龜湯大門',
-            description: '請點選下方按鈕選擇要做的事情',
+            description: '請點選下方按鈕選擇要做的事情\n**註：須將Discord更新到最新版才能使用此功能**',
         }],
         components: [{ type: 'ACTION_ROW', components: [
             {
@@ -31,7 +32,6 @@ module.exports = async function handleSoup(cmd) {
                 customId: 'mod',
                 label: '管理海龜湯',
                 style: 'SUCCESS',
-                disabled: true,
             },
             {
                 type: 'BUTTON',
@@ -67,15 +67,18 @@ module.exports = async function handleSoup(cmd) {
     if (!receivedBtn) return;
     switch (receivedBtn.customId) {
         case 'help': {
-            await help(receivedBtn);
-            break;
+            return await help(receivedBtn);
         }
 
         case 'leave': {
-            await receivedBtn.update({ content: '881', components: [], embeds: [{
+            return await receivedBtn.update({ content: '881', components: [], embeds: [{
                 title: '成功離開',
                 color: 'RED',
             }], fetchReply: true }).then((m) => setTimeout(() => m.delete(), 1_000));
+        }
+
+        case 'mod': {
+            return await mod(receivedBtn);
         }
     }
 };

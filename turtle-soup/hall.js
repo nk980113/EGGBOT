@@ -1,5 +1,6 @@
 const resolveImport = require('./resolveImport');
 const help = resolveImport('./help');
+const mod = resolveImport('./mod');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -31,7 +32,6 @@ module.exports = async function hall(oldBtn) {
                 customId: 'mod',
                 label: '管理海龜湯',
                 style: 'SUCCESS',
-                disabled: true,
             },
             {
                 type: 'BUTTON',
@@ -44,7 +44,6 @@ module.exports = async function hall(oldBtn) {
                 customId: 'leave',
                 label: '離開',
                 style: 'DANGER',
-                disabled: true,
             },
         ] }],
         fetchReply: true,
@@ -67,7 +66,18 @@ module.exports = async function hall(oldBtn) {
     if (!receivedBtn) return;
     switch (receivedBtn.customId) {
         case 'help': {
-            await help(receivedBtn);
+            return await help(receivedBtn);
+        }
+
+        case 'leave': {
+            return await receivedBtn.update({ content: '881', components: [], embeds: [{
+                title: '成功離開',
+                color: 'RED',
+            }], fetchReply: true }).then((m) => setTimeout(() => m.delete(), 1_000));
+        }
+
+        case 'mod': {
+            return await mod(receivedBtn);
         }
     }
 };

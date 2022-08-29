@@ -10,8 +10,9 @@ class DB {
     static #authClient;
     /** @type {import('googleapis').sheets_v4.Resource$Spreadsheets} */
     static #googleSheet;
+    static authReadyPromise;
     static {
-        (async () => {
+        this.authReadyPromise = (async () => {
             this.#authClient = await this.#auth.getClient();
             this.#googleSheet = google.sheets({ version: 'v4', auth: this.#authClient }).spreadsheets;
         })();
@@ -30,7 +31,7 @@ class DB {
     #sheetId;
     #subSheet;
     #keys;
-    #entries = [];
+    entries = [];
 
     constructor({
         sheetId,
@@ -45,12 +46,13 @@ class DB {
     }
 
     async sync() {
-        this.#entries = (await DB.#googleSheet.values.get({
+        const { data } = await DB.#googleSheet.values.get({
             auth: DB.#auth,
             spreadsheetId: this.#sheetId,
             range: this.#subSheet,
             valueRenderOption: 'UNFORMATTED_VALUE',
-        })).data.values.filter((r) => r.length > 0).map((r) => {
+        });
+        this.entries = (data.values ?? []).filter((r) => r.length > 0).map((r) => {
             const entry = {};
             r.forEach((v, i) => {
                 if (v) {
@@ -59,7 +61,7 @@ class DB {
             });
             return entry;
         });
-        return this.#entries;
+        return this.entries;
     }
 
     async save() {
@@ -74,13 +76,9 @@ class DB {
             range: `${this.#subSheet}!A:${finalColumn}`,
             valueInputOption: 'RAW',
             resource: {
-                values: this.#entries.map((e) => this.#keys.map((k) => e[k])),
+                values: this.entries.map((e) => this.#keys.map((k) => e[k])),
             },
         });
-    }
-
-    get entries() {
-        return this.#entries;
     }
 }
 
