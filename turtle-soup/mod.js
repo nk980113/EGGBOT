@@ -1,6 +1,7 @@
 const { soup } = require('../DB/soup');
 const resolveImport = require('./resolveImport');
 const hall = resolveImport('./hall');
+const create = resolveImport('./create');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -27,7 +28,6 @@ async function mod(oldBtn, page = 0) {
                     style: 'PRIMARY',
                     label: '煮一碗湯',
                     customId: 'create',
-                    disabled: true,
                 },
                 {
                     type: 'BUTTON',
@@ -64,7 +64,7 @@ async function mod(oldBtn, page = 0) {
                         maxValues: 1,
                         disabled: true,
                         options: limitedSoups.map((s) => ({
-                            value: s.id,
+                            value: String(s.soupId),
                             label: s.title,
                         })),
                     }],
@@ -78,7 +78,7 @@ async function mod(oldBtn, page = 0) {
                             style: 'PRIMARY',
                             emoji: '◀',
                             label: '上一頁',
-                            disabled: page == 0,
+                            disabled: page === 0,
                         },
                         {
                             type: 'BUTTON',
@@ -93,7 +93,6 @@ async function mod(oldBtn, page = 0) {
                             style: 'PRIMARY',
                             label: '煮一碗湯',
                             customId: 'create',
-                            disabled: true,
                         },
                         {
                             type: 'BUTTON',
@@ -140,6 +139,10 @@ async function mod(oldBtn, page = 0) {
 
             case 'nextpage': {
                 return await mod(receivedComponent, ++page);
+            }
+
+            case 'create': {
+                return await create(receivedComponent);
             }
         }
     }

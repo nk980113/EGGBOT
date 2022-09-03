@@ -10,7 +10,7 @@ module.exports = async function handleSoup(cmd) {
         embeds: [{
             color: 'GREEN',
             title: '海龜湯大門',
-            description: '請點選下方按鈕選擇要做的事情\n**註：須將Discord更新到最新版才能使用此功能**',
+            description: '請點選下方按鈕選擇要做的事情\n**註：須將Discord更新到2022年2月之後的版本才能使用此功能**',
         }],
         components: [{ type: 'ACTION_ROW', components: [
             {

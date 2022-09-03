@@ -5,6 +5,6 @@ module.exports = {
     soup: new DB({
         sheetId,
         subSheet: 'soup',
-        keys: ['soupId', 'authorId', 'title', 'content', 'answer'],
+        keys: ['soupId', 'authorId', 'title', 'content', 'publicAnswer', 'answer'],
     }),
 };
