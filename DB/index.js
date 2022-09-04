@@ -50,14 +50,12 @@ class DB {
             auth: DB.#auth,
             spreadsheetId: this.#sheetId,
             range: this.#subSheet,
-            valueRenderOption: 'UNFORMATTED_VALUE',
+            valueRenderOption: 'FORMULA',
         });
         this.entries = (data.values ?? []).filter((r) => r.length > 0).map((r) => {
             const entry = {};
             r.forEach((v, i) => {
-                if (v) {
-                    entry[this.#keys[i]] = v;
-                }
+                entry[this.#keys[i]] = v;
             });
             return entry;
         });

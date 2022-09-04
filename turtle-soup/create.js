@@ -1,11 +1,13 @@
 const { soup } = require('../DB/soup');
+const resolveImport = require('./resolveImport');
+const view = resolveImport('./view');
 
 /**
- * @param {import('discord.js').ButtonInteraction} btn
+ * @param {import('discord.js').ButtonInteraction} oldBtn
  */
-module.exports = async function create(btn) {
+module.exports = async function create(oldBtn) {
     await Promise.all([
-        btn.message.edit({
+        oldBtn.message.edit({
             embeds: [{
                 color: 'GREY',
                 title: '正在創建海龜湯',
@@ -13,7 +15,7 @@ module.exports = async function create(btn) {
             }],
             components: [],
         }),
-        btn.showModal({
+        oldBtn.showModal({
             customId: 'createsoup',
             title: '創建海龜湯',
             components: [
@@ -55,12 +57,12 @@ module.exports = async function create(btn) {
             ],
         }),
     ]);
-    const soupModal = await btn.awaitModalSubmit({ time: 600_000, filter: (m) => m.user.id === btn.user.id && m.customId === 'createsoup' })
+    const soupModal = await oldBtn.awaitModalSubmit({ time: 600_000, filter: (m) => m.user.id === oldBtn.user.id && m.customId === 'createsoup' })
         // eslint-disable-next-line no-empty-function
         .catch(() => {});
 
     if (!soupModal) return;
-    let maxId = Math.max(soup.entries.map((s) => s.soupId));
+    let maxId = Math.max(...soup.entries.map((s) => s.soupId));
     if (!Number.isFinite(maxId)) maxId = 0;
     const title = soupModal.fields.getTextInputValue('title');
     soup.entries.push({
@@ -69,10 +71,10 @@ module.exports = async function create(btn) {
         title,
         content: soupModal.fields.getTextInputValue('content'),
         answer: soupModal.fields.getTextInputValue('answer'),
-        authorId: btn.user.id,
+        authorId: oldBtn.user.id,
     });
-    await soup.save();
-    await soupModal.update({
+    /** @type {import('discord.js').Message} */
+    const msg = await soupModal.update({
         embeds: [{
             color: 'BLUE',
             title: `${title}發布成功`,
@@ -85,9 +87,23 @@ module.exports = async function create(btn) {
                     customId: 'view',
                     style: 'SUCCESS',
                     label: '看這碗湯',
-                    disabled: true,
                 },
             ],
         }],
+        fetchReply: true,
     });
+    const viewBtn = await msg.awaitMessageComponent({
+        filter(btn) {
+            if (btn.user.id !== oldBtn.user.id) {
+                btn.reply({ content: '你不可使用此按鈕', ephemeral: true });
+                return false;
+            }
+            return true;
+        },
+        time: 120_000,
+    }).catch(() => {
+        msg.edit({ components: msg.components[0].components[0].setDisabled(true) });
+    });
+    if (!viewBtn) return;
+    return await view(viewBtn, maxId, 'mod', 0);
 };

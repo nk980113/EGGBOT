@@ -9,7 +9,7 @@ module.exports = {
         data: new SlashCommandBuilder().setDescription('測量機器人的延遲'),
         async do(cmd) {
             const msg = await cmd.reply({ content: '測量中...', fetchReply: true });
-            cmd.editReply(`WS週期：${cmd.client.ws.ping}\nI/O週期：${msg.createdTimestamp - cmd.createdTimestamp}`);
+            cmd.editReply(`WS週期(對Discord伺服器的延遲)：${cmd.client.ws.ping}\nI/O週期(從輸入指令到機器人回應的延遲)：${msg.createdTimestamp - cmd.createdTimestamp}`);
         },
     },
     refresh: {
@@ -78,6 +78,23 @@ module.exports = {
                 ],
             });
             cmd.reply({ content: '成功建議', ephemeral: true });
+        },
+    },
+    invite: {
+        data: new SlashCommandBuilder()
+            .setDescription('查看邀請連結'),
+        /**
+         * @param {import('discord.js').CommandInteraction} cmd
+         */
+        async do(cmd) {
+            cmd.reply({
+                embeds: [{
+                    color: 'RANDOM',
+                    title: '按我邀請',
+                    url: 'https://discord.com/api/oauth2/authorize?client_id=832969224854175744&permissions=16384&scope=bot%20applications.commands',
+                    description: '使用此機器人代表你同意機器人的[使用條款](https://sites.google.com/view/eggbotsblogger/tos)',
+                }],
+            });
         },
     },
 };

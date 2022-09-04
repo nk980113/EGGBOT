@@ -2,18 +2,19 @@ const { soup } = require('../DB/soup');
 const resolveImport = require('./resolveImport');
 const hall = resolveImport('./hall');
 const create = resolveImport('./create');
+const view = resolveImport('./view');
 
 /**
- * @param {import('discord.js').ButtonInteraction} oldBtn
+ * @param {import('discord.js').ButtonInteraction} btn
  * @param {number} [page]
  */
-async function mod(oldBtn, page = 0) {
-    const { user } = oldBtn;
+async function mod(btn, page = 0) {
+    const { user } = btn;
     const soups = soup.entries.filter((s) => s.authorId === user.id);
     /** @type {import('discord.js').Message} */
     let msg;
     if (!soups.length) {
-        msg = await oldBtn.update({
+        msg = await btn.update({
             embeds: [{
                 color: 'GREYPLE',
                 title: '你煮過的湯',
@@ -39,18 +40,18 @@ async function mod(oldBtn, page = 0) {
             fetchReply: true,
         });
     } else {
-        const limitedSoups = soups.filter((_, i) => page * 25 <= i && i < (page + 1) * 25);
-        msg = await oldBtn.update({
+        const limitedSoups = soups.reverse().filter((_, i) => page * 25 <= i && i < (page + 1) * 25);
+        msg = await btn.update({
             embeds: [{
                 color: 'GREYPLE',
                 title: '你煮過的湯',
                 fields: limitedSoups.map((s) => ({
                     name: `#${s.soupId} ${s.title}`,
-                    value: `${s.content.slice(0, 19)}...`,
+                    value: `${s.content.slice(0, 19).replace('\n', ' ')}...`,
                     inline: true,
                 })),
                 footer: {
-                    text: `共${Math.ceil(limitedSoups.length / 25)}頁，這是第${page + 1}頁`,
+                    text: `共${Math.ceil(soups.length / 25)}頁，這是第${page + 1}頁`,
                 },
             }],
             components: [
@@ -62,7 +63,6 @@ async function mod(oldBtn, page = 0) {
                         placeholder: '選一碗湯來看',
                         minValues: 1,
                         maxValues: 1,
-                        disabled: true,
                         options: limitedSoups.map((s) => ({
                             value: String(s.soupId),
                             label: s.title,
@@ -86,7 +86,7 @@ async function mod(oldBtn, page = 0) {
                             style: 'PRIMARY',
                             emoji: '▶',
                             label: '下一頁',
-                            disabled: limitedSoups.length > page * 25,
+                            disabled: soups.length > page * 25,
                         },
                         {
                             type: 'BUTTON',
@@ -108,8 +108,8 @@ async function mod(oldBtn, page = 0) {
     }
     const receivedComponent = await msg.awaitMessageComponent({
         filter(component) {
-            if (component.user.id !== oldBtn.user.id) {
-                oldBtn.reply({ content: '你不可使用此按鈕', ephemeral: true });
+            if (component.user.id !== btn.user.id) {
+                component.reply({ content: '你不可使用此按鈕', ephemeral: true });
                 return false;
             }
             return true;
@@ -126,7 +126,12 @@ async function mod(oldBtn, page = 0) {
     });
     if (!receivedComponent) return;
     if (receivedComponent.isSelectMenu()) {
-        // TODO: implement this
+        return await view(
+            receivedComponent,
+            Number(receivedComponent.values[0]),
+            'mod',
+            page,
+        );
     } else {
         switch (receivedComponent.customId) {
             case 'hall': {

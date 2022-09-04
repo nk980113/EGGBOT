@@ -8,7 +8,8 @@
         "together": "Together",
         "report": "Dev",
         "suggest": "Dev",
-        "shutdown": "Dev"
+        "shutdown": "Dev",
+        "invite": "Dev"
     },
     "btns": {
         "Gdel": "General"

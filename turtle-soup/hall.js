@@ -1,6 +1,7 @@
 const resolveImport = require('./resolveImport');
 const help = resolveImport('./help');
 const mod = resolveImport('./mod');
+const all = resolveImport('./all');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -25,7 +26,6 @@ module.exports = async function hall(oldBtn) {
                 customId: 'all',
                 label: '查看所有海龜湯',
                 style: 'PRIMARY',
-                disabled: true,
             },
             {
                 type: 'BUTTON',
@@ -78,6 +78,10 @@ module.exports = async function hall(oldBtn) {
 
         case 'mod': {
             return await mod(receivedBtn);
+        }
+
+        case 'all': {
+            return await all(receivedBtn);
         }
     }
 };
