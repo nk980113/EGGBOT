@@ -1,8 +1,11 @@
 const { MessageEmbed } = require('discord.js');
+const logger = require('./logger');
+const config = require('./setup/config.json');
 
+// TODO: use webhook
 module.exports = (client, e) => {
-    client.channels.cache.get(require('./setup/config.json').errorChannelId).send({
-        content: `<@!${require('./setup/config.json').ownerId}>`,
+    client.channels.cache.get(config.errorChannelId).send({
+        content: `<@!${config.ownerId}>`,
         embeds: [new MessageEmbed()
             .setTitle(`野生的${e.name}出現了！`)
             .setDescription(`錯誤堆疊：${e.stack ? `\`\`\`${e.stack}\`\`\`` : '被Wumpus當蛋糕吃掉了'}`)
@@ -22,5 +25,5 @@ module.exports = (client, e) => {
                 value: e.message,
             }),
         ],
-    });
+    }).then((msg) => logger.error(`View error message on https://discord.com/channels/${config.guildId}/${config.errorChannelId}/${msg.id}`));
 };

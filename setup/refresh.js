@@ -32,7 +32,7 @@ const refresh = () => {
                 Routes.applicationCommands(clientId),
                 { body: cmds },
             );
-            logger.info('refresh:Global /commands refreshed.');
+            logger.info('refresh:Global /commands refreshed.', true);
         } catch (err) {
             logger.error(err);
         }
@@ -41,7 +41,7 @@ const refresh = () => {
                 Routes.applicationGuildCommands(clientId, guildId),
                 { body: testCmds },
             );
-            logger.info('refresh:Testing /commands refreshed.');
+            logger.info('refresh:Testing /commands refreshed.', true);
         } catch (err) {
             logger.error(err);
         }
