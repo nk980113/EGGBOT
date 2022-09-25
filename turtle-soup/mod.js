@@ -47,7 +47,9 @@ async function mod(btn, page = 0) {
                 title: '你煮過的湯',
                 fields: limitedSoups.map((s) => ({
                     name: `#${s.soupId} ${s.title}`,
-                    value: `${s.content.slice(0, 19).replace('\n', ' ')}...`,
+                    value: s.content.length <= 20
+                        ? s.content
+                        : `${s.content.slice(0, 19).replace('\n', ' ')}...`,
                     inline: true,
                 })),
                 footer: {

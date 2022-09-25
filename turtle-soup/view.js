@@ -3,6 +3,7 @@ const resolveImport = require('./resolveImport');
 const hall = resolveImport('./hall');
 const all = resolveImport('./all');
 const mod = resolveImport('./mod');
+const edit = resolveImport('./edit');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -58,8 +59,8 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
                     type: 'BUTTON',
                     customId: 'edit',
                     style: 'PRIMARY',
-                    label: '編輯此題',
-                    disabled: true,
+                    label: '給這碗湯加料',
+                    disabled: foundSoup.authorId !== oldBtn.user.id,
                 },
             ],
         }],
@@ -99,6 +100,11 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
         case 'back': {
             if (from === 'all') return await all(receivedBtn, fromPage);
             if (from === 'mod') return await mod(receivedBtn, fromPage);
+        }
+
+        // eslint-disable-next-line no-fallthrough
+        case 'edit': {
+            return await edit(receivedBtn, id, from, fromPage);
         }
     }
 };

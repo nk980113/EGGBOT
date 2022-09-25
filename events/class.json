@@ -10,8 +10,5 @@
         "suggest": "Dev",
         "shutdown": "Dev",
         "invite": "Dev"
-    },
-    "btns": {
-        "Gdel": "General"
     }
 }

@@ -16,7 +16,9 @@ module.exports = async function all(btn, page = 0) {
             title: '已發布的海龜湯',
             fields: limitedSoups.map((s) => ({
                 name: `#${s.soupId} ${s.title}`,
-                value: `${s.content.slice(0, 19).replace('\n', ' ')}...`,
+                value: s.content.length <= 20
+                    ? s.content
+                    : `${s.content.slice(0, 19).replace('\n', ' ')}...`,
                 inline: true,
             })),
             footer: {
