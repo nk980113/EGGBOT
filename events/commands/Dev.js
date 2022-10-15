@@ -1,6 +1,8 @@
 const { setTimeout } = require('node:timers');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, Util } = require('discord.js');
+const dayjs = require('dayjs');
+const logger = require('../../logger');
 const DB = require('../../DB');
 module.exports = {
     name: '開發者事項',
@@ -28,6 +30,7 @@ module.exports = {
             cmd.reply('機器人將在三秒後下線');
             setTimeout(() => {
                 cmd.client.destroy();
+                logger.info('Manual exit through /shutdown command', true);
                 process.exit();
             }, 3000).unref();
         },
@@ -93,6 +96,20 @@ module.exports = {
                     title: '按我邀請',
                     url: 'https://discord.com/api/oauth2/authorize?client_id=832969224854175744&permissions=16384&scope=bot%20applications.commands',
                     description: '使用此機器人代表你同意機器人的[使用條款](https://sites.google.com/view/eggbotsblogger/tos)',
+                }],
+            });
+        },
+    },
+    'get-log': {
+        data: new SlashCommandBuilder()
+            .setDescription('Owner only command'),
+        ownerOnly: true,
+        async do(cmd) {
+            cmd.reply({
+                embeds: [{
+                    fields: [
+                        ...logger.getLog().map(({ type, msg, timestamp }) => ({ name: `${type.toUpperCase()} ${dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss')}`, value: msg })),
+                    ],
                 }],
             });
         },

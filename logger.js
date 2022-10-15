@@ -20,10 +20,10 @@ const logger = {
     getLog() {
         const file = readFileSync('./log.txt', { encoding: 'utf-8' });
         writeFileSync('./log.txt', '');
-        return file.split(/\r?\n/g).map(JSON.parse);
+        return file.split(/\r?\n/g).filter((l) => Boolean(l)).map((l) => JSON.parse(l));
     },
     writeToFile(msg, type) {
-        appendFileSync('./log.txt', JSON.stringify({ type, msg, timestamp: Date.now() }));
+        appendFileSync('./log.txt', JSON.stringify({ type, msg, timestamp: Date.now() }) + '\n');
     },
     messageToOuterPort(msg, type) {
         parentPort.postMessage({ type, msg, timestamp: Date.now() });

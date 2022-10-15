@@ -9,6 +9,7 @@
         "report": "Dev",
         "suggest": "Dev",
         "shutdown": "Dev",
-        "invite": "Dev"
+        "invite": "Dev",
+        "get-log": "Dev"
     }
 }
