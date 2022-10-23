@@ -1,6 +1,6 @@
 const { setTimeout } = require('node:timers');
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, Util } = require('discord.js');
+const { Util } = require('discord.js');
 const dayjs = require('dayjs');
 const logger = require('../../logger');
 const DB = require('../../DB');
@@ -49,12 +49,11 @@ module.exports = {
             const txt = cmd.options.getString('text');
             cmd.client.channels.cache.get(require('../../setup/config.json').reportChannelId).send({
                 content: `<@!${require('../../setup/config.json').ownerId}>`,
-                embeds: [
-                    new MessageEmbed()
-                        .setColor('RED')
-                        .setTitle('錯誤回報')
-                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${Util.escapeMarkdown(txt)}${'```'}`),
-                ],
+                embeds: [{
+                    color: 'RED',
+                    title: '錯誤回報',
+                    description: `By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${Util.escapeCodeBlock(txt)}${'```'}`,
+                }],
             });
             cmd.reply({ content: '成功回報', ephemeral: true });
         },
@@ -73,12 +72,11 @@ module.exports = {
             const txt = cmd.options.getString('text');
             cmd.client.channels.cache.get(require('../../setup/config.json').suggestChannelId).send({
                 content: `<@!${require('../../setup/config.json').ownerId}>`,
-                embeds: [
-                    new MessageEmbed()
-                        .setColor('GOLD')
-                        .setTitle('建議')
-                        .setDescription(`By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${Util.escapeMarkdown(txt)}${'```'}`),
-                ],
+                embeds: [{
+                    color: 'GOLD',
+                    title: '建議',
+                    description: `By ${cmd.user.tag}${cmd.guild ? ` from ${cmd.guild.name}` : ''}\n${'```'}${Util.escapeCodeBlock(txt)}${'```'}`,
+                }],
             });
             cmd.reply({ content: '成功建議', ephemeral: true });
         },

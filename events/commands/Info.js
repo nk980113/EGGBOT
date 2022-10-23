@@ -1,5 +1,4 @@
 const { readdirSync } = require('fs');
-const { MessageEmbed } = require('discord.js');
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { guildId } = require('../../setup/config.json');
 module.exports = {
@@ -10,38 +9,38 @@ module.exports = {
         async do(cmd) {
             const package = require('../../package.json');
             cmd.reply({
-                embeds: [
-                    new MessageEmbed()
-                        .addFields([
-                            {
-                                name: '版本',
-                                value: package.version,
-                                inline: true,
-                            },
-                            {
-                                name: '開發者',
-                                value: 'eggeggegg#1278',
-                                inline: true,
-                            },
-                            {
-                                name: 'discord.js版本',
-                                value: package.dependencies['discord.js'].replace('^', ''),
-                                inline: true,
-                            },
-                            {
-                                name: '機器人開發伺服器',
-                                value: '||discord.gg/26R8MPze2J||',
-                            },
-                            {
-                                name: '說明',
-                                value: '這台機器人的功能，\n基本上全部都是經過完整測試才釋出的。\n機器人不求多元，只求創新。\n功能不求多，只求好。\n如果有新功能要建議，\n請盡量使用/suggest指令，\n我們將盡快處理。',
-                            },
-                            {
-                                name: '冷知識',
-                                value: '||這台機器人永遠都是beta版，因為功能絕不會有做完的一天||',
-                            },
-                        ]).setColor([0x35, 0x39, 0x3f]),
-                ],
+                embeds: [{
+                    fields: [
+                        {
+                            name: '版本',
+                            value: package.version,
+                            inline: true,
+                        },
+                        {
+                            name: '開發者',
+                            value: 'eggeggegg#1278',
+                            inline: true,
+                        },
+                        {
+                            name: 'discord.js版本',
+                            value: package.dependencies['discord.js'].replace('^', ''),
+                            inline: true,
+                        },
+                        {
+                            name: '機器人開發伺服器',
+                            value: '||discord.gg/26R8MPze2J||',
+                        },
+                        {
+                            name: '說明',
+                            value: '這台機器人的功能，\n基本上全部都是經過完整測試才釋出的。\n機器人不求多元，只求創新。\n功能不求多，只求好。\n如果有新功能要建議，\n請盡量使用/suggest指令，\n我們將盡快處理。',
+                        },
+                        {
+                            name: '冷知識',
+                            value: '||這台機器人永遠都是beta版，因為功能絕不會有做完的一天||',
+                        },
+                    ],
+                    color: 0x35393f,
+                }],
             });
         },
     },
