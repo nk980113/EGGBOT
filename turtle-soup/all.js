@@ -10,66 +10,113 @@ const view = resolveImport('./view');
 module.exports = async function all(btn, page = 0) {
     const limitedSoups = soup.entries.slice().reverse().filter((_, i) => page * 25 <= i && i < (page + 1) * 25);
     /** @type {import('discord.js').Message} */
-    const msg = await btn.update({
-        embeds: [{
-            color: 'AQUA',
-            title: '已發布的海龜湯',
-            fields: limitedSoups.map((s) => ({
-                name: `#${s.soupId} ${s.title}`,
-                value: s.content.length <= 20
-                    ? s.content
-                    : `${s.content.slice(0, 19).replace('\n', ' ')}...`,
-                inline: true,
-            })),
-            footer: {
-                text: `共${Math.ceil(soup.entries.length / 25)}頁，這是第${page + 1}頁`,
-            },
-        }],
-        components: [
-            {
-                type: 'ACTION_ROW',
-                components: [{
-                    type: 'SELECT_MENU',
-                    customId: 'view',
-                    placeholder: '選一碗湯來看',
-                    minValues: 1,
-                    maxValues: 1,
-                    options: limitedSoups.map((s) => ({
-                        value: String(s.soupId),
-                        label: s.title,
-                    })),
+    let msg;
+    if (limitedSoups.length > 0) {
+        msg = await btn.update({
+            embeds: [{
+                color: 'AQUA',
+                title: '已發布的海龜湯',
+                fields: limitedSoups.map((s) => ({
+                    name: `#${s.soupId} ${s.title}`,
+                    value: s.content.length <= 20
+                        ? s.content
+                        : `${s.content.slice(0, 19).replace('\n', ' ')}...`,
+                    inline: true,
+                })),
+                footer: {
+                    text: `共${Math.ceil(soup.entries.length / 25)}頁，這是第${page + 1}頁`,
+                },
+            }],
+            components: [
+                {
+                    type: 'ACTION_ROW',
+                    components: [{
+                        type: 'SELECT_MENU',
+                        customId: 'view',
+                        placeholder: '選一碗湯來看',
+                        minValues: 1,
+                        maxValues: 1,
+                        options: limitedSoups.map((s) => ({
+                            value: String(s.soupId),
+                            label: s.title,
+                        })),
+                    }],
+                },
+                {
+                    type: 'ACTION_ROW',
+                    components: [
+                        {
+                            type: 'BUTTON',
+                            customId: 'lastpage',
+                            style: 'PRIMARY',
+                            emoji: '◀',
+                            label: '上一頁',
+                            disabled: page === 0,
+                        },
+                        {
+                            type: 'BUTTON',
+                            customId: 'nextpage',
+                            style: 'PRIMARY',
+                            emoji: '▶',
+                            label: '下一頁',
+                            disabled: soup.entries.length > page * 25,
+                        },
+                        {
+                            type: 'BUTTON',
+                            style: 'SECONDARY',
+                            label: '回到大門',
+                            customId: 'hall',
+                        },
+                    ],
+                },
+            ],
+            fetchReply: true,
+        });
+    } else {
+        msg = await btn.update({
+            embeds: [{
+                color: 'BLURPLE',
+                title: '已發布的海龜湯',
+                fields: [{
+                    name: '這裡空空如也',
+                    value: '大概是天氣太熱，沒人煮湯',
                 }],
-            },
-            {
-                type: 'ACTION_ROW',
-                components: [
-                    {
-                        type: 'BUTTON',
-                        customId: 'lastpage',
-                        style: 'PRIMARY',
-                        emoji: '◀',
-                        label: '上一頁',
-                        disabled: page === 0,
-                    },
-                    {
-                        type: 'BUTTON',
-                        customId: 'nextpage',
-                        style: 'PRIMARY',
-                        emoji: '▶',
-                        label: '下一頁',
-                        disabled: soup.entries.length > page * 25,
-                    },
-                    {
-                        type: 'BUTTON',
-                        style: 'SECONDARY',
-                        label: '回到大門',
-                        customId: 'hall',
-                    },
-                ],
-            },
-        ],
-        fetchReply: true,
-    });
+                footer: {
+                    text: '共0頁，這是第0頁',
+                },
+            }],
+            components: [
+                {
+                    type: 'ACTION_ROW',
+                    components: [
+                        {
+                            type: 'BUTTON',
+                            customId: 'lastpage',
+                            style: 'PRIMARY',
+                            emoji: '◀',
+                            label: '上一頁',
+                            disabled: true,
+                        },
+                        {
+                            type: 'BUTTON',
+                            customId: 'nextpage',
+                            style: 'PRIMARY',
+                            emoji: '▶',
+                            label: '下一頁',
+                            disabled: true,
+                        },
+                        {
+                            type: 'BUTTON',
+                            style: 'SECONDARY',
+                            label: '回到大門',
+                            customId: 'hall',
+                        },
+                    ],
+                },
+            ],
+            fetchReply: true,
+        });
+    }
     const receivedComponent = await msg.awaitMessageComponent({
         filter(component) {
             if (component.user.id !== btn.user.id) {
