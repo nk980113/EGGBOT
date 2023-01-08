@@ -66,7 +66,7 @@ module.exports = async function hall(oldBtn) {
     if (!receivedBtn) return;
     switch (receivedBtn.customId) {
         case 'help': {
-            return await help(receivedBtn);
+            return await Promise.resolve(receivedBtn).then(help);
         }
 
         case 'leave': {
@@ -77,11 +77,11 @@ module.exports = async function hall(oldBtn) {
         }
 
         case 'mod': {
-            return await mod(receivedBtn);
+            return await Promise.resolve(receivedBtn).then(mod);
         }
 
         case 'all': {
-            return await all(receivedBtn);
+            return await Promise.resolve(receivedBtn).then(all);
         }
     }
 };

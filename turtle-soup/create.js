@@ -1,4 +1,4 @@
-const { soup } = require('../DB/soup');
+const request = require('../request');
 const resolveImport = require('./resolveImport');
 const view = resolveImport('./view');
 
@@ -27,8 +27,8 @@ module.exports = async function create(oldBtn) {
                         label: '標題',
                         customId: 'title',
                         minLength: 2,
-                        maxLength: 30,
-                        placeholder: '字數必須介於2~30之間',
+                        maxLength: 20,
+                        placeholder: '字數必須介於2~20之間',
                         required: true,
                     }],
                 },
@@ -59,40 +59,62 @@ module.exports = async function create(oldBtn) {
     ]);
     const soupModal = await oldBtn.awaitModalSubmit({ time: 600_000, filter: (m) => m.user.id === oldBtn.user.id && m.customId === 'createsoup' })
         // eslint-disable-next-line no-empty-function
-        .catch(() => {});
+        .catch(() => { });
 
     if (!soupModal) return;
-    let maxId = Math.max(...soup.entries.map((s) => s.soupId));
-    if (!Number.isFinite(maxId)) maxId = 0;
+    await soupModal.deferUpdate();
     const title = soupModal.fields.getTextInputValue('title');
-    soup.entries.push({
-        soupId: ++maxId,
-        publicAnswer: false,
+    const data = await request({ resource: 'soup', method: 'create', metadata: {
         title,
         content: soupModal.fields.getTextInputValue('content'),
         answer: soupModal.fields.getTextInputValue('answer'),
         authorId: oldBtn.user.id,
-    });
+    } });
     /** @type {import('discord.js').Message} */
-    const msg = await soupModal.update({
-        embeds: [{
-            color: 'BLUE',
-            title: `${title}發布成功`,
-        }],
-        components: [{
-            type: 'ACTION_ROW',
-            components: [
-                {
-                    type: 'BUTTON',
-                    customId: 'view',
-                    style: 'SUCCESS',
-                    label: '看這碗湯',
-                },
-            ],
-        }],
-        fetchReply: true,
-    });
-    const viewBtn = await msg.awaitMessageComponent({
+    let msg;
+    if (!data.success) {
+        setImmediate(() => {
+            throw data.error;
+        });
+        msg = await soupModal.editReply({
+            embeds: [{
+                color: 'RED',
+                title: `${title}發布失敗`,
+            }],
+            components: [{
+                type: 'ACTION_ROW',
+                components: [
+                    {
+                        type: 'BUTTON',
+                        customId: 'create',
+                        style: 'SECONDARY',
+                        label: '再試一次',
+                    },
+                ],
+            }],
+            fetchReply: true,
+        });
+    } else {
+        msg = await soupModal.editReply({
+            embeds: [{
+                color: 'BLUE',
+                title: `${title}發布成功`,
+            }],
+            components: [{
+                type: 'ACTION_ROW',
+                components: [
+                    {
+                        type: 'BUTTON',
+                        customId: 'view',
+                        style: 'SUCCESS',
+                        label: '看這碗湯',
+                    },
+                ],
+            }],
+            fetchReply: true,
+        });
+    }
+    const newBtn = await msg.awaitMessageComponent({
         filter(btn) {
             if (btn.user.id !== oldBtn.user.id) {
                 btn.reply({ content: '你不可使用此按鈕', ephemeral: true });
@@ -104,6 +126,14 @@ module.exports = async function create(oldBtn) {
     }).catch(() => {
         msg.edit({ components: msg.components[0].components[0].setDisabled(true) });
     });
-    if (!viewBtn) return;
-    return await view(viewBtn, maxId, 'mod', 0);
+    if (!newBtn) return;
+    switch (newBtn.customId) {
+        case 'view': {
+            return await Promise.resolve().then(() => view(newBtn, data.metadata.soupId, 'mod', 0));
+        }
+
+        case 'create': {
+            return await Promise.resolve(newBtn).then(create);
+        }
+    }
 };

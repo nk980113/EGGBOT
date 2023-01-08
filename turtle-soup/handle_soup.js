@@ -67,7 +67,7 @@ module.exports = async function handleSoup(cmd) {
     if (!receivedBtn) return;
     switch (receivedBtn.customId) {
         case 'help': {
-            return await help(receivedBtn);
+            return await Promise.resolve(receivedBtn).then(help);
         }
 
         case 'leave': {
@@ -78,11 +78,11 @@ module.exports = async function handleSoup(cmd) {
         }
 
         case 'mod': {
-            return await mod(receivedBtn);
+            return await Promise.resolve(receivedBtn).then(mod);
         }
 
         case 'all': {
-            return await all(receivedBtn);
+            return await Promise.resolve(receivedBtn).then(all);
         }
     }
 };

@@ -3,7 +3,6 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { Util } = require('discord.js');
 const dayjs = require('dayjs');
 const logger = require('../../logger');
-const DB = require('../../DB');
 module.exports = {
     name: '開發者事項',
     description: '關於機器人開發的一些指令',
@@ -26,7 +25,6 @@ module.exports = {
         data: new SlashCommandBuilder().setDescription('Owner only command'),
         ownerOnly: true,
         async do(cmd) {
-            await DB.forceSaveAll();
             cmd.reply('機器人將在三秒後下線');
             setTimeout(() => {
                 cmd.client.destroy();

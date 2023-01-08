@@ -56,5 +56,5 @@ module.exports = async function help(oldBtn) {
         }) }] });
     });
     if (!receivedBtn) return;
-    await hall(receivedBtn);
+    await Promise.resolve(receivedBtn).then(hall);
 };
