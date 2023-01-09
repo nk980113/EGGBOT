@@ -41,10 +41,6 @@
             }
         ],
         "keyword-spacing": "error",
-        "linebreak-style": [
-            "error",
-            "windows"
-        ],
         "max-nested-callbacks": [
             "error",
             {
