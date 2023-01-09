@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "update": "ncu -u && npm i",
-    "dep-check": "ncu"
+    "dep-check": "ncu",
+    "lint": "eslint . --fix"
   },
   "author": "eggeggegg",
   "license": "GNU-AGPL-v3",
