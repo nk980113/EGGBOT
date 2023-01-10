@@ -63,7 +63,7 @@ module.exports = {
         data: new SlashCommandBuilder().setDescription('查看所有類別/指令')
             .addStringOption(op => op
                 .setName('category')
-                .setDescription('要查詢的類別代號(若無則顯示所有類別)')
+                .setDescription('要查詢的類別代號(若無則顯示所有類別)，類別代號及其意義包含在所有類別的頁面中')
                 .setRequired(false)
                 .addChoices(...readdirSync(__dirname).filter(f => f.endsWith('.js')).map((i) => ({ name: i.replace('.js', ''), value: i.replace('.js', '') })))),
         /** @param {import('discord.js').CommandInteraction} cmd */
@@ -82,7 +82,6 @@ module.exports = {
                     const cmds = Object.keys(rawCat).filter((k) => !['name', 'description'].includes(k));
                     const availableCmds = cmd.guildId === guildId ? cmds.filter((k) => !rawCat[k].off && (!rawCat[k].ownerOnly || cmd.user.id === ownerId)) : cmds.filter((k) => !rawCat[k].off && !rawCat[k].test && (!rawCat[k].ownerOnly || cmd.user.id === ownerId));
                     embed.fields.push({
-                        inline: true,
                         name: `${file.replace('.js', '')}：${rawCat.name}`,
                         value: `${rawCat.description}\n在${cmd.guild ? '此伺服器' : '私訊'}中共${availableCmds.length}條可用指令`,
                     });
@@ -100,7 +99,6 @@ module.exports = {
                 };
                 for (const slashCmd of availableCmds) {
                     embed.fields.push({
-                        inline: true,
                         name: `/${slashCmd}`,
                         value: rawCat[slashCmd].data.description,
                     });
