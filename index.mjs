@@ -6,8 +6,7 @@ import dayjs from 'dayjs';
 
 const dayjsFormat = 'YYYY MMM DD HH:mm:ss.SSS';
 
-// eslint-disable-next-line no-inline-comments
-const totalThreadsToLaunch = 2 /* 2 */;
+const totalThreadsToLaunch = 2;
 let totalThreadsLaunched = 0;
 
 // TODO: switch to sharding mode
