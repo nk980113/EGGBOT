@@ -4,6 +4,7 @@ const hall = resolveImport('./hall');
 const all = resolveImport('./all');
 const mod = resolveImport('./mod');
 const edit = resolveImport('./edit');
+const del = resolveImport('./delete');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -53,6 +54,7 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
                     iconURL: author.displayAvatarURL({ dynamic: true }),
                 },
                 description: foundSoup.content,
+                timestamp: foundSoup.timestamp,
             }],
             components: [{
                 type: 'ACTION_ROW',
@@ -83,11 +85,22 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
                         style: 'SECONDARY',
                         label: '回上頁',
                     },
+                ],
+            }, {
+                type: 'ACTION_ROW',
+                components: [
                     {
                         type: 'BUTTON',
                         customId: 'edit',
                         style: 'PRIMARY',
                         label: '給這碗湯加料',
+                        disabled: foundSoup.authorId !== oldBtn.user.id,
+                    },
+                    {
+                        type: 'BUTTON',
+                        customId: 'delete',
+                        style: 'DANGER',
+                        label: '倒掉這碗湯',
                         disabled: foundSoup.authorId !== oldBtn.user.id,
                     },
                 ],
@@ -115,12 +128,13 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
         time: 120_000,
     }).catch(() => {
         msg.edit({
-            components: [{
-                type: 'ACTION_ROW', components: msg.components[0].components.map((btn) => {
-                    btn.disabled = true;
-                    return btn;
-                }),
-            }],
+            components: msg.components.map((row) => {
+                row.components = row.components.map((component) => {
+                    component.disabled = true;
+                    return component;
+                });
+                return row;
+            }),
         });
     });
 
@@ -137,7 +151,11 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
 
         // eslint-disable-next-line no-fallthrough
         case 'edit': {
-            return await edit(receivedBtn, id, from, fromPage);
+            return await Promise.resolve().then(edit(receivedBtn, id, from, fromPage));
+        }
+
+        case 'delete': {
+            return await Promise.resolve().then(del(receivedBtn, id, from, fromPage));
         }
     }
 };

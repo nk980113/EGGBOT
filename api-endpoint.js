@@ -5,6 +5,7 @@ const { AsyncQueue } = require('@sapphire/async-queue');
 // {resource: '', method: '', metadata:}
 // soup create: give answer content title authorId returns soupId
 // soup edit: give answer content title soupId returns null
+// soup delete: give soupId returns null
 // soup findallbyauthor: give authorId page returns soups[] totalPages
 // soup findall: give page returns soups[] totalPages
 // soup findbyid: give id returns soup
@@ -17,34 +18,32 @@ const { AsyncQueue } = require('@sapphire/async-queue');
 
     parentPort.on('message', async (req) => {
         const { id, payload: { resource, method, metadata } } = req;
-        switch (resource) {
-            case 'soup': {
-                switch (method) {
-                    case 'create': {
-                        await soupCreateQueue.wait();
-                        try {
+        try {
+            switch (resource) {
+                case 'soup': {
+                    switch (method) {
+                        case 'create': {
+                            await soupCreateQueue.wait();
                             const doc = await Questions.create({ soupId: 0, timestamp: Date.now(), publicAnswer: false, ...metadata });
                             parentPort.postMessage({ success: true, id, metadata: { soupId: doc.soupId } });
-                        } catch (e) {
-                            parentPort.postMessage({ success: false, id, error: e });
+                            soupCreateQueue.shift();
+                            break;
                         }
-                        soupCreateQueue.shift();
-                        break;
-                    }
 
-                    case 'edit': {
-                        try {
+                        case 'delete': {
+                            await Questions.deleteOne({ soupId: metadata.soupId });
+                            parentPort.postMessage({ success: true, id, metadata: null });
+                            break;
+                        }
+
+                        case 'edit': {
                             await Questions.updateOne({ soupId: metadata.soupId }, metadata);
                             parentPort.postMessage({ success: true, id, metadata: null });
-                        } catch (e) {
-                            parentPort.postMessage({ success: false, id, error: e });
+                            break;
                         }
-                        break;
-                    }
 
-                    case 'findallbyauthor': {
-                        const soups = Questions.find({ authorId: metadata.authorId });
-                        try {
+                        case 'findallbyauthor': {
+                            const soups = Questions.find({ authorId: metadata.authorId });
                             const totalPages = await new Promise((res, rej) => {
                                 soups.clone().countDocuments((err, count) => {
                                     if (err) rej(err);
@@ -58,15 +57,11 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                                 shortContent: soup.getShortContent(),
                             }));
                             parentPort.postMessage({ success: true, id, metadata: { soups: targetSoups, totalPages } });
-                        } catch (e) {
-                            parentPort.postMessage({ success: false, id, error: e });
+                            break;
                         }
-                        break;
-                    }
 
-                    case 'findall': {
-                        const soups = Questions.find();
-                        try {
+                        case 'findall': {
+                            const soups = Questions.find();
                             const totalPages = await new Promise((res, rej) => {
                                 soups.clone().countDocuments((err, count) => {
                                     if (err) rej(err);
@@ -80,14 +75,10 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                                 shortContent: soup.getShortContent(),
                             }));
                             parentPort.postMessage({ success: true, id, metadata: { soups: targetSoups, totalPages } });
-                        } catch (e) {
-                            parentPort.postMessage({ success: false, id, error: e });
+                            break;
                         }
-                        break;
-                    }
 
-                    case 'findbyid': {
-                        try {
+                        case 'findbyid': {
                             const foundSoup = await Questions.findOne({ soupId: metadata.id });
                             parentPort.postMessage({ success: true, id, metadata: {
                                 soupId: foundSoup.soupId,
@@ -98,18 +89,18 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                                 publicAnswer: foundSoup.publicAnswer,
                                 authorId: foundSoup.authorId,
                             } });
-                        } catch (e) {
-                            parentPort.postMessage({ success: false, id, error: e });
+                            break;
                         }
-                        break;
-                    }
 
-                    default: {
-                        parentPort.postMessage({ success: false, error: new TypeError('Invalid method for resource soup was given') });
+                        default: {
+                            parentPort.postMessage({ success: false, error: new TypeError('Invalid method for resource soup was given') });
+                        }
                     }
+                    break;
                 }
-                break;
             }
+        } catch (e) {
+            parentPort.postMessage({ success: false, id, error: e });
         }
     });
 })();

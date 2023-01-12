@@ -92,7 +92,7 @@ module.exports = async function all(btn, page = 0) {
                                 style: 'PRIMARY',
                                 emoji: '▶',
                                 label: '下一頁',
-                                disabled: data.metadata.totalPages <= page,
+                                disabled: data.metadata.totalPages <= page + 1,
                             },
                             {
                                 type: 'BUTTON',
@@ -111,7 +111,7 @@ module.exports = async function all(btn, page = 0) {
                     color: 'BLURPLE',
                     title: '已發布的海龜湯',
                     fields: [{
-                        name: `懂數學的都知道${page}大於${data.metadata.totalPages}`,
+                        name: `懂數學的都知道${page}不小於${data.metadata.totalPages}`,
                         value: '而這麼大的數字系統無法負荷',
                     }],
                     footer: {

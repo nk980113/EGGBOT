@@ -101,10 +101,12 @@ module.exports = {
             .setDescription('Owner only command'),
         ownerOnly: true,
         async do(cmd) {
-            cmd.reply({
+            const log = logger.getLog();
+            if (log.length === 0) await cmd.reply('笑死，你把紀錄都清空了');
+            else await cmd.reply({
                 embeds: [{
                     fields: [
-                        ...logger.getLog().map(({ type, msg, timestamp }) => ({ name: `${type.toUpperCase()} ${dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss')}`, value: msg })),
+                        ...log.map(({ type, msg, timestamp }) => ({ name: `${type.toUpperCase()} ${dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss')}`, value: msg })),
                     ],
                 }],
             });
