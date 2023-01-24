@@ -7,12 +7,12 @@
  1. Create the hidden file `setup/token.json`, the format is below:
  ```json
  {
-    "token": "the bot's token",
-    "mongourl": {
-        "turtleSoup": "the mongodb url with specified database route to store 'turtle soup' data"
-    }
+     "token": "the bot's token",
+     "mongourl": {
+          "turtleSoup": "the mongodb url with specified database route to store 'turtle soup' data"
+     }
  }
  ```
  3. Install dependencies.
  1. `node .` to start the bot.
- 1. Now follow the [license](./LICENSE), open source with the same license and copyright notices!
+ 1. Now follow the [license](./LICENSE), open source with the same license and copyright notices (lol)
