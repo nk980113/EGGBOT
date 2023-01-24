@@ -1,0 +1,2 @@
+# 蛋機器人 [![CodeFactor](https://www.codefactor.io/repository/github/nk980113/eggbot/badge)](https://www.codefactor.io/repository/github/nk980113/eggbot) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nk980113/EGGBOT/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/nk980113/EGGBOT/?branch=main)
+ 我的Discord機器人的GitHub代碼庫
