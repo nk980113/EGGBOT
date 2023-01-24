@@ -1,4 +1,4 @@
-# EGGBOT beta [![CodeFactor](https://www.codefactor.io/repository/github/nk980113/eggbot/badge)](https://www.codefactor.io/repository/github/nk980113/eggbot) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nk980113/EGGBOT/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/nk980113/EGGBOT/?branch=main)
+# EGGBOT Beta [![CodeFactor](https://www.codefactor.io/repository/github/nk980113/eggbot/badge)](https://www.codefactor.io/repository/github/nk980113/eggbot) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/nk980113/EGGBOT/badges/quality-score.png?b=main)](https://scrutinizer-ci.com/g/nk980113/EGGBOT/?branch=main)
  A GitHub repo for my discord bot ([蛋機器人Beta#4273](https://discordapp.com/users/832969224854175744))
 # Introduction
  
