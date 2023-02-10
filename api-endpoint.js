@@ -24,7 +24,7 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                     switch (method) {
                         case 'create': {
                             await soupCreateQueue.wait();
-                            const doc = await Questions.create({ soupId: 0, timestamp: Date.now(), publicAnswer: false, ...metadata });
+                            const doc = await Questions.create(metadata);
                             parentPort.postMessage({ success: true, id, metadata: { soupId: doc.soupId } });
                             soupCreateQueue.shift();
                             break;
@@ -50,7 +50,7 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                                     res(Math.ceil(count / 25));
                                 });
                             });
-                            const rawTargetSoups = (await soups.sort({ soupId: -1 })).slice(metadata.page * 25, (metadata.page + 1) * 25);
+                            const rawTargetSoups = await soups.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
                             const targetSoups = rawTargetSoups.map((soup) => ({
                                 soupId: soup.soupId,
                                 title: soup.title,

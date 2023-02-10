@@ -12,19 +12,19 @@
   "author": "eggeggegg",
   "license": "GNU-AGPL-v3",
   "dependencies": {
-    "@discordjs/builders": "^1.0.0",
-    "@discordjs/rest": "^1.0.0",
+    "@discordjs/builders": "^1.4.0",
+    "@discordjs/rest": "^1.5.0",
     "@sapphire/async-queue": "^1.5.0",
     "ansi-regex": "^6.0.1",
-    "chalk": "^5.0.1",
-    "dayjs": "^1.11.5",
+    "chalk": "^5.2.0",
+    "dayjs": "^1.11.7",
     "discord-api-types": "^0.36.3",
     "discord.js": "^13.12.0",
-    "minimist": "^1.2.6",
-    "mongoose": "^6.6.7"
+    "minimist": "^1.2.7",
+    "mongoose": "^6.8.3"
   },
   "devDependencies": {
-    "eslint": "^8.12.0",
-    "npm-check-updates": "^16.0.1"
+    "eslint": "^8.31.0",
+    "npm-check-updates": "^16.6.2"
   }
 }

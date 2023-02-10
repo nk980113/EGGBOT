@@ -5,10 +5,12 @@ const questionSchema = new Schema({
     soupId: {
         type: Number,
         required: true,
+        default: 0,
     },
     timestamp: {
         type: Number,
         required: true,
+        default: Date.now,
     },
     authorId: {
         type: String,
@@ -29,7 +31,12 @@ const questionSchema = new Schema({
     publicAnswer: {
         type: Boolean,
         required: true,
+        default: false,
     },
+    answers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Answer',
+    }],
 }, {
     methods: {
         getShortContent() {
@@ -47,12 +54,52 @@ const questionSchema = new Schema({
     },
 });
 
+const answerSchema = new Schema({
+    original: {
+        type: Schema.Types.ObjectId,
+        ref: 'Question',
+        required: true,
+    },
+    content: {
+        type: String,
+        required: true,
+    },
+    reply: {
+        replied: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        public: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        status: {
+            type: String,
+            required: true,
+            enum: ['not replyed', 'correct', 'incorrect', 'not correlated', 'can\'t reply', 'solution', 'opposite solution'],
+        },
+        important: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
+        content: {
+            type: String,
+            required: true,
+        },
+    },
+});
+
 questionSchema.pre('save', async function() {
     this.soupId = await Questions.getNextId();
 });
 
 const Questions = soup.model('Question', questionSchema);
+const Answers = soup.model('Answer', answerSchema);
 
 module.exports = {
     Questions,
+    Answers,
 };
