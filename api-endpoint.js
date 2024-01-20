@@ -44,12 +44,7 @@ const { AsyncQueue } = require('@sapphire/async-queue');
 
                         case 'findallbyauthor': {
                             const soups = Questions.find({ authorId: metadata.authorId });
-                            const totalPages = await new Promise((res, rej) => {
-                                soups.clone().countDocuments((err, count) => {
-                                    if (err) rej(err);
-                                    res(Math.ceil(count / 25));
-                                });
-                            });
+                            const totalPages = Math.ceil(await soups.clone().countDocuments() / 25);
                             const rawTargetSoups = await soups.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
                             const targetSoups = rawTargetSoups.map((soup) => ({
                                 soupId: soup.soupId,
@@ -62,12 +57,7 @@ const { AsyncQueue } = require('@sapphire/async-queue');
 
                         case 'findall': {
                             const soups = Questions.find();
-                            const totalPages = await new Promise((res, rej) => {
-                                soups.clone().countDocuments((err, count) => {
-                                    if (err) rej(err);
-                                    res(Math.ceil(count / 25));
-                                });
-                            });
+                            const totalPages = Math.ceil(await soups.clone().countDocuments() / 25);
                             const rawTargetSoups = (await soups.sort({ soupId: -1 })).slice(metadata.page * 25, (metadata.page + 1) * 25);
                             const targetSoups = rawTargetSoups.map((soup) => ({
                                 soupId: soup.soupId,
