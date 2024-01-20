@@ -19,7 +19,7 @@
     "dayjs": "^1.11.7",
     "discord-api-types": "^0.36.3",
     "discord.js": "^13.17.1",
-    "mongoose": "^6.8.3"
+    "mongoose": "^7.6.8"
   },
   "devDependencies": {
     "eslint": "^8.31.0",
