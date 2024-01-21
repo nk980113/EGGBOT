@@ -14,11 +14,11 @@ const botThread = new Worker('./discord.js', { env: { ...process.env, timestamp:
 const apiThread = new Worker('./api-endpoint.js');
 
 botThread.on('online', () => {
-    console.log(`[${dayjs().format(dayjsFormat)}] ${chalk.black.bgGreen('[LAUNCH]')} (${++totalThreadsLaunched}/${totalThreadsToLaunch}) bot thread launched`);
+    console.log(`[${day()}] ${chalk.black.bgGreen('[LAUNCH]')} (${++totalThreadsLaunched}/${totalThreadsToLaunch}) bot thread launched`);
 });
 
 apiThread.on('online', () => {
-    console.log(`[${dayjs().format(dayjsFormat)}] ${chalk.black.bgGreen('[LAUNCH]')} (${++totalThreadsLaunched}/${totalThreadsToLaunch}) database api endpoint thread launched`);
+    console.log(`[${day()}] ${chalk.black.bgGreen('[LAUNCH]')} (${++totalThreadsLaunched}/${totalThreadsToLaunch}) database api endpoint thread launched`);
 });
 
 botThread.on('message', (v) => {
@@ -28,11 +28,11 @@ botThread.on('message', (v) => {
         type === 'info' ? chalk.blue(type)
             : type === 'error' ? chalk.red(type) : type;
 
-    console.log(`[${dayjs(timestamp).format(dayjsFormat)}] ${chalk.yellow('[BOT]')} ${formattedType} ${msg}`);
+    console.log(`[${day(timestamp)}] ${chalk.yellow('[BOT]')} ${formattedType} ${msg}`);
 });
 
 botThread.on('error', (e) => {
-    console.log(chalk.red(`[${dayjs().format(dayjsFormat)}] [BOT] error A uncaught error occured. Aborting...`));
+    console.log(chalk.red(`[${day()}] [BOT] error A uncaught error occured. Aborting...`));
     console.log(e);
     process.exit(1);
 });
@@ -51,4 +51,8 @@ apiThread.on('message', (res) => {
 
 function handleRequest(req) {
     apiThread.postMessage(req);
+}
+
+function day(...args) {
+    return dayjs(...args).format(dayjsFormat);
 }

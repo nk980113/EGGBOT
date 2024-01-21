@@ -1,22 +1,17 @@
-const { readdirSync } = require('fs');
-const { join } = require('path');
 const logger = require('../logger');
+const { fetchEvents } = require('./utils');
 
-const refreshClient = client => {
+module.exports = function refreshClient(client) {
     client.removeAllListeners();
-    const events = readdirSync(join(__dirname, '..', 'events'));
-    for (const file of events) {
-        if (!file.endsWith('.js')) continue;
-        delete require.cache[join(__dirname, '..', 'events', file)];
-        const event = require(`../events/${file}`);
+    for (const event of fetchEvents()) {
         if (event.once) {
             event.do.forEach(f => {
-                client.once(event.name, (...args) => f(...args));
+                client.once(event.name, f);
             });
             logger.info(`main:added once listener to event "${event.name}"`);
         } else {
             event.do.forEach(f => {
-                client.on(event.name, (...args) => f(...args));
+                client.on(event.name, f);
             });
             logger.info(`main:added listener to event "${event.name}"`);
         }
@@ -24,5 +19,3 @@ const refreshClient = client => {
 
     require('./refresh')();
 };
-
-module.exports = refreshClient;

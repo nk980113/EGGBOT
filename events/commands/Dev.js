@@ -105,9 +105,7 @@ module.exports = {
             if (log.length === 0) await cmd.reply('笑死，你把紀錄都清空了');
             else await cmd.reply({
                 embeds: [{
-                    fields: [
-                        ...log.map(({ type, msg, timestamp }) => ({ name: `${type.toUpperCase()} ${dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss')}`, value: msg })),
-                    ],
+                    fields: log.map(({ type, msg, timestamp }) => ({ name: `${type.toUpperCase()} ${dayjs(timestamp).format('YYYY/MM/DD HH:mm:ss')}`, value: msg })).slice(0, 25),
                 }],
             });
         },

@@ -1,12 +1,13 @@
-const logger = require('../logger');
+const { readdirSync } = require('node:fs');
+const { join } = require('node:path');
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v9');
+const logger = require('../logger');
 const { token } = require('./token.json');
 const { clientId, guildId } = require('./config.json');
-const { readdirSync } = require('fs');
-const { join } = require('path');
-const r = new REST({ version: '10' }).setToken(token);
-const refresh = () => {
+
+const rest = new REST({ version: '10' }).setToken(token);
+module.exports = function refresh() {
     const cmds = [];
     const testCmds = [];
     const cmdFiles = readdirSync(join(__dirname, '..', 'events', 'commands')).filter(f => f.endsWith('.js'));
@@ -28,7 +29,7 @@ const refresh = () => {
     }
     (async () => {
         try {
-            await r.put(
+            await rest.put(
                 Routes.applicationCommands(clientId),
                 { body: cmds },
             );
@@ -37,7 +38,7 @@ const refresh = () => {
             logger.error(err);
         }
         try {
-            await r.put(
+            await rest.put(
                 Routes.applicationGuildCommands(clientId, guildId),
                 { body: testCmds },
             );
@@ -47,4 +48,3 @@ const refresh = () => {
         }
     })();
 };
-module.exports = refresh;

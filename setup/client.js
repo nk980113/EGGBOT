@@ -1,4 +1,4 @@
-const client = new (require('discord.js').Client)({ intents: 1 + (1 << 7) });
+const client = new (require('discord.js').Client)({ intents: 1 });
 require('./refreshClient')(client);
 process.on('beforeExit', () => {
     client.destroy();
