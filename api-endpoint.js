@@ -1,20 +1,22 @@
 const { parentPort } = require('node:worker_threads');
-const { AsyncQueue } = require('@sapphire/async-queue');
 
 // format:
 // {resource: '', method: '', metadata:}
 // soup create: give answer content title authorId returns soupId
+// soup createans: give soupId content author returns ansId
 // soup edit: give answer content title soupId returns null
 // soup delete: give soupId returns null
+// soup deleteans: give soupId ansId returns null
 // soup findallbyauthor: give authorId page returns soups[] totalPages
 // soup findall: give page returns soups[] totalPages
-// soup findbyid: give id returns soup
+// soup findallans: give soupId page returns anss[] totalPages
+// soup findallansbyauthor: give soupId page authorId returns anss[] totalPages
+// soup findansbyid: give soupId ansId returns ans
+// soup findbyid: give soupId returns soup
 
 (async () => {
     await require('./mongoose');
-    const { Questions } = require('./mongoose/schemas/soup');
-    // prevent race condition
-    const soupCreateQueue = new AsyncQueue;
+    const { Questions, Answers } = require('./mongoose/schemas/soup');
 
     parentPort.on('message', async (req) => {
         const { id, payload: { resource, method, metadata } } = req;
@@ -23,15 +25,31 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                 case 'soup': {
                     switch (method) {
                         case 'create': {
-                            await soupCreateQueue.wait();
                             const doc = await Questions.create(metadata);
                             parentPort.postMessage({ success: true, id, metadata: { soupId: doc.soupId } });
-                            soupCreateQueue.shift();
+                            break;
+                        }
+
+                        case 'createans': {
+                            const q = await Questions.findOne({ soupId: metadata.soupId });
+                            const ans = await q.createAnswer(metadata.content, metadata.by);
+                            parentPort.postMessage({ success: true, id, metadata: ans.answerId });
                             break;
                         }
 
                         case 'delete': {
-                            await Questions.deleteOne({ soupId: metadata.soupId });
+                            const q = await Questions.findOne({ soupId: metadata.soupId });
+                            const oId = q._id;
+                            await q.deleteOne();
+                            await Answers.deleteMany({ original: oId });
+                            parentPort.postMessage({ success: true, id, metadata: null });
+                            break;
+                        }
+
+                        case 'deleteans': {
+                            const q = await Questions.findOne({ soupId: metadata.soupId });
+                            const oId = q._id;
+                            await Answers.deleteOne({ answerId: metadata.answerId, original: oId });
                             parentPort.postMessage({ success: true, id, metadata: null });
                             break;
                         }
@@ -39,6 +57,36 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                         case 'edit': {
                             await Questions.updateOne({ soupId: metadata.soupId }, metadata);
                             parentPort.postMessage({ success: true, id, metadata: null });
+                            break;
+                        }
+
+                        case 'findallans': {
+                            const q = await Questions.find({ soupId: metadata.soupId });
+                            const anss = Answers.find({ original: q._id });
+                            const totalPages = Math.ceil(await anss.clone().countDocuments() / 25);
+                            const rawTargetAnss = await anss.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
+                            const targetAnss = rawTargetAnss.map((ans) => ({
+                                answerId: ans.answerId,
+                                by: ans.by,
+                                shortContent: ans.getShortContent(),
+                                shortReply: ans.getReplyStatus(),
+                            }));
+                            parentPort.postMessage({ success: true, id, metadata: { anss: targetAnss, totalPages } });
+                            break;
+                        }
+
+                        case 'findallansbyauthor': {
+                            const q = await Questions.find({ soupId: metadata.soupId });
+                            const anss = Answers.find({ original: q._id, by: metadata.authorId });
+                            const totalPages = Math.ceil(await anss.clone().countDocuments() / 25);
+                            const rawTargetAnss = await anss.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
+                            const targetAnss = rawTargetAnss.map((ans) => ({
+                                answerId: ans.answerId,
+                                by: ans.by,
+                                shortContent: ans.getShortContent(),
+                                shortReply: ans.getReplyStatus(),
+                            }));
+                            parentPort.postMessage({ success: true, id, metadata: { anss: targetAnss, totalPages } });
                             break;
                         }
 
@@ -58,13 +106,26 @@ const { AsyncQueue } = require('@sapphire/async-queue');
                         case 'findall': {
                             const soups = Questions.find();
                             const totalPages = Math.ceil(await soups.clone().countDocuments() / 25);
-                            const rawTargetSoups = (await soups.sort({ soupId: -1 })).slice(metadata.page * 25, (metadata.page + 1) * 25);
+                            const rawTargetSoups = await soups.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
                             const targetSoups = rawTargetSoups.map((soup) => ({
                                 soupId: soup.soupId,
                                 title: soup.title,
                                 shortContent: soup.getShortContent(),
                             }));
                             parentPort.postMessage({ success: true, id, metadata: { soups: targetSoups, totalPages } });
+                            break;
+                        }
+
+                        case 'findansbyid': {
+                            const { soupId, answerId } = metadata;
+                            const q = await Questions.findOne({ soupId });
+                            const foundAns = await Answers.findOne({ answerId: answerId, original: q._id });
+                            parentPort.postMessage({ success: true, id, metadata: {
+                                content: foundAns.content,
+                                by: foundAns.by,
+                                timestamp: foundAns.timestamp,
+                                reply: foundAns.reply,
+                            } });
                             break;
                         }
 

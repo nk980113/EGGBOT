@@ -1,3 +1,4 @@
+const dayjs = require('dayjs');
 const request = require('../request');
 const resolveImport = require('./resolveImport');
 const hall = resolveImport('./hall');
@@ -5,6 +6,7 @@ const all = resolveImport('./all');
 const mod = resolveImport('./mod');
 const edit = resolveImport('./edit');
 const del = resolveImport('./delete');
+const allAns = resolveImport('./all_ans');
 
 /**
  * @param {import('discord.js').ButtonInteraction} oldBtn
@@ -17,6 +19,7 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
     /** @type {import('discord.js').Message} */
     let msg;
     let answer;
+    let title;
 
     if (!soupData.success) {
         setImmediate(() => {
@@ -43,14 +46,15 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
     } else {
         const foundSoup = soupData.metadata;
         answer = foundSoup.answer;
+        title = foundSoup.title;
         const author = await oldBtn.client.users.fetch(foundSoup.authorId);
         msg = await oldBtn.update({
             fetchReply: true,
             embeds: [{
                 color: 'NAVY',
-                title: `#${foundSoup.soupId} ${foundSoup.title}`,
+                title: `#${foundSoup.soupId} ${title}`,
                 footer: {
-                    text: `由${author.tag}出題`,
+                    text: `由${author.tag}於${dayjs(foundSoup.timestamp).format('YYYY/MM/DD')}出題`,
                     iconURL: author.displayAvatarURL({ dynamic: true }),
                 },
                 description: foundSoup.content,
@@ -63,8 +67,7 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
                         type: 'BUTTON',
                         customId: 'questions',
                         style: 'SUCCESS',
-                        label: '查看所有問題',
-                        disabled: true,
+                        label: '查看所有提問',
                     },
                     {
                         type: 'BUTTON',
@@ -140,6 +143,10 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
 
     if (!receivedBtn) return;
     switch (receivedBtn.customId) {
+        case 'questions': {
+            return await Promise.resolve().then(() => allAns(receivedBtn, id, title, from, fromPage));
+        }
+
         case 'hall': {
             return await Promise.resolve(receivedBtn).then(hall);
         }
@@ -151,11 +158,11 @@ module.exports = async function view(oldBtn, id, from, fromPage) {
 
         // eslint-disable-next-line no-fallthrough
         case 'edit': {
-            return await Promise.resolve().then(edit(receivedBtn, id, from, fromPage));
+            return await Promise.resolve().then(() => edit(receivedBtn, id, from, fromPage));
         }
 
         case 'delete': {
-            return await Promise.resolve().then(del(receivedBtn, id, from, fromPage));
+            return await Promise.resolve().then(() => del(receivedBtn, id, from, fromPage));
         }
     }
 };

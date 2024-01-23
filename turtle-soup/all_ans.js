@@ -1,15 +1,18 @@
 const request = require('../request');
 const resolveImport = require('./resolveImport');
-const hall = resolveImport('./hall');
 const view = resolveImport('./view');
 
 /**
  * @param {import('discord.js').ButtonInteraction} btn
+ * @param {number} soupId
+ * @param {string} title
+ * @param {string} from
+ * @param {number} fromPage
  * @param {number} [page]
  */
-module.exports = async function all(btn, page = 0) {
+module.exports = async function allAns(btn, soupId, title, from, fromPage, page = 0) {
     await btn.deferUpdate();
-    const data = await request({ resource: 'soup', method: 'findall', metadata: { page } });
+    const data = await request({ resource: 'soup', method: 'findallans', metadata: { soupId, page } });
     /** @type {import('discord.js').Message} */
     let msg;
     if (!data.success) {
@@ -19,14 +22,20 @@ module.exports = async function all(btn, page = 0) {
         msg = await btn.editReply({
             embeds: [{
                 color: 'RED',
-                title: '已發布的海龜湯',
+                title: '所有提問',
                 fields: [{
-                    name: '找尋海龜湯時發生錯誤',
+                    name: '找尋提問時發生錯誤',
                     value: '已回報至開發伺服器',
                 }],
             }],
             components: [{
                 type: 'ACTION_ROW', components: [
+                    {
+                        type: 'BUTTON',
+                        style: 'PRIMARY',
+                        label: '回到原題目',
+                        customId: 'back',
+                    },
                     {
                         type: 'BUTTON',
                         style: 'SECONDARY',
@@ -38,16 +47,16 @@ module.exports = async function all(btn, page = 0) {
             fetchReply: true,
         });
     } else {
-        /** @type {{ soupId: number; title: string; shortContent: string; }[]} */
-        const soups = data.metadata.soups;
+        /** @type {{ answerId: number; by: string; shortContent: string; shortReply: string; }[]} */
+        const soups = data.metadata.anss;
         if (soups.length > 0) {
             msg = await btn.editReply({
                 embeds: [{
-                    color: 'AQUA',
-                    title: '已發布的海龜湯',
-                    fields: soups.map((s) => ({
-                        name: `#${s.soupId} ${s.title}`,
-                        value: s.shortContent,
+                    color: 'GREEN',
+                    title: `${title} 的所有提問`,
+                    fields: soups.map((a) => ({
+                        name: `#${a.answerId} ${a.shortReply}`,
+                        value: a.shortContent,
                         inline: true,
                     })),
                     footer: {
@@ -59,14 +68,16 @@ module.exports = async function all(btn, page = 0) {
                         type: 'ACTION_ROW',
                         components: [{
                             type: 'SELECT_MENU',
-                            customId: 'view',
-                            placeholder: '選一碗湯來看',
-                            minValues: 1,
-                            maxValues: 1,
-                            options: soups.map((s) => ({
-                                value: String(s.soupId),
-                                label: s.title,
-                            })),
+                            customId: 'viewans',
+                            placeholder: '選一個提問來看',
+                            disabled: true,
+                            // TODO:
+                            // minValues: 1,
+                            // maxValues: 1,
+                            // options: soups.map((s) => ({
+                            //     value: String(s.soupId),
+                            //     label: s.title,
+                            // })),
                         }],
                     },
                     {
@@ -91,8 +102,8 @@ module.exports = async function all(btn, page = 0) {
                             {
                                 type: 'BUTTON',
                                 style: 'SECONDARY',
-                                label: '回到大門',
-                                customId: 'hall',
+                                label: '回到原題目',
+                                customId: 'back',
                             },
                         ],
                     },
@@ -103,10 +114,10 @@ module.exports = async function all(btn, page = 0) {
             msg = await btn.editReply({
                 embeds: [{
                     color: 'BLURPLE',
-                    title: '已發布的海龜湯',
+                    title: '',
                     fields: [{
-                        name: `懂數學的都知道${page}不小於${data.metadata.totalPages}`,
-                        value: '而這麼大的數字系統無法負荷',
+                        name: '0000000000000',
+                        value: '0000',
                     }],
                     footer: {
                         text: '共0頁，這是第0頁',
@@ -147,10 +158,10 @@ module.exports = async function all(btn, page = 0) {
             msg = await btn.editReply({
                 embeds: [{
                     color: 'BLURPLE',
-                    title: '已發布的海龜湯',
+                    title: '所有提問',
                     fields: [{
                         name: '這裡空空如也',
-                        value: '大概是天氣太熱，沒人煮湯',
+                        value: '徵人啟事：徵求一名玩家問個問題，叫醒~~||郭台銘||~~出題者',
                     }],
                     footer: {
                         text: '共0頁，這是第0頁',
@@ -179,8 +190,8 @@ module.exports = async function all(btn, page = 0) {
                             {
                                 type: 'BUTTON',
                                 style: 'SECONDARY',
-                                label: '回到大門',
-                                customId: 'hall',
+                                label: '回到原題目',
+                                customId: 'back',
                             },
                         ],
                     },
@@ -209,25 +220,26 @@ module.exports = async function all(btn, page = 0) {
             });
         });
         if (!receivedComponent) return;
-        if (receivedComponent.isSelectMenu()) {
-            return await view(
-                receivedComponent,
-                Number(receivedComponent.values[0]),
-                'all',
-                page,
-            );
-        } else {
+        // if (receivedComponent.isSelectMenu()) {
+        //     return await view(
+        //         receivedComponent,
+        //         Number(receivedComponent.values[0]),
+        //         'all',
+        //         page,
+        //     );
+        /* } else */
+        {
             switch (receivedComponent.customId) {
-                case 'hall': {
-                    return await hall(receivedComponent);
+                case 'back': {
+                    return Promise.resolve().then(() => view(receivedComponent, soupId, from, fromPage));
                 }
 
                 case 'lastpage': {
-                    return await all(receivedComponent, --page);
+                    return await allAns(receivedComponent, soupId, title, from, fromPage, --page);
                 }
 
                 case 'nextpage': {
-                    return await all(receivedComponent, ++page);
+                    return await allAns(receivedComponent, soupId, title, from, fromPage, ++page);
                 }
             }
         }

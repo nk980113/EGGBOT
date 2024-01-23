@@ -8,11 +8,11 @@ interface IQuestion {
     content: string;
     answer: string;
     publicAnswer: boolean;
-    answers: PopulatedDoc<Document<ObjectId> & IAnswer>[],
 }
 
 interface IQuestionMethods {
     getShortContent(): string;
+    createAnswer(content: string, by: string): Promise<Document<unknown, {}, IAnswer>>;
 }
 
 interface IQuestionModelWithStatics extends Model<IQuestion, {}, IQuestionMethods> {
@@ -22,6 +22,9 @@ interface IQuestionModelWithStatics extends Model<IQuestion, {}, IQuestionMethod
 interface IAnswer {
     original: PopulatedDoc<Document<ObjectId> & IQuestion>;
     content: string;
+    answerId: number;
+    by: string;
+    timestamp: number;
     reply: {
         replied: boolean;
         public: boolean;
@@ -31,5 +34,10 @@ interface IAnswer {
     };
 }
 
+interface IAnswerMethods {
+    getShortContent(): string;
+    getReplyStatus(): string;
+}
+
 export declare const Questions: IQuestionModelWithStatics;
-export declare const Answers: Model<IAnswer>;
+export declare const Answers: Model<IAnswer, {}, IAnswerMethods>;
