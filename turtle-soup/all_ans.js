@@ -146,8 +146,8 @@ module.exports = async function allAns(btn, soupId, title, from, fromPage, page 
                             {
                                 type: 'BUTTON',
                                 style: 'SECONDARY',
-                                label: '回到大門',
-                                customId: 'hall',
+                                label: '回到原題目',
+                                customId: 'back',
                             },
                         ],
                     },
