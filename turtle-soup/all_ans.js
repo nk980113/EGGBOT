@@ -1,5 +1,6 @@
 const request = require('../request');
 const resolveImport = require('./resolveImport');
+const viewAns = resolveImport('./view_ans');
 const view = resolveImport('./view');
 
 /**
@@ -48,16 +49,16 @@ module.exports = async function allAns(btn, soupId, title, from, fromPage, page 
         });
     } else {
         /** @type {{ answerId: number; by: string; shortContent: string; shortReply: string; }[]} */
-        const soups = data.metadata.anss;
-        if (soups.length > 0) {
+        const anss = data.metadata.anss;
+        const users = await Promise.all(anss.map((a) => btn.client.users.fetch(a.by).then((u) => u.displayName)));
+        if (anss.length > 0) {
             msg = await btn.editReply({
                 embeds: [{
                     color: 'GREEN',
                     title: `${title} 的所有提問`,
-                    fields: soups.map((a) => ({
-                        name: `#${a.answerId} ${a.shortReply}`,
+                    fields: anss.map((a, i) => ({
+                        name: `#${a.answerId} by ${users[i]} ${a.shortReply}`,
                         value: a.shortContent,
-                        inline: true,
                     })),
                     footer: {
                         text: `共${data.metadata.totalPages}頁，這是第${page + 1}頁`,
@@ -70,14 +71,12 @@ module.exports = async function allAns(btn, soupId, title, from, fromPage, page 
                             type: 'SELECT_MENU',
                             customId: 'viewans',
                             placeholder: '選一個提問來看',
-                            disabled: true,
-                            // TODO:
-                            // minValues: 1,
-                            // maxValues: 1,
-                            // options: soups.map((s) => ({
-                            //     value: String(s.soupId),
-                            //     label: s.title,
-                            // })),
+                            minValues: 1,
+                            maxValues: 1,
+                            options: anss.map((a, i) => ({
+                                value: String(soupId),
+                                label: `#${a.answerId} by ${users[i]}`,
+                            })),
                         }],
                     },
                     {
@@ -116,8 +115,8 @@ module.exports = async function allAns(btn, soupId, title, from, fromPage, page 
                     color: 'BLURPLE',
                     title: '',
                     fields: [{
-                        name: '0000000000000',
-                        value: '0000',
+                        name: 'eRroR pAgE OveRfLo',
+                        value: 'w',
                     }],
                     footer: {
                         text: '共0頁，這是第0頁',
@@ -220,15 +219,18 @@ module.exports = async function allAns(btn, soupId, title, from, fromPage, page 
             });
         });
         if (!receivedComponent) return;
-        // if (receivedComponent.isSelectMenu()) {
-        //     return await view(
-        //         receivedComponent,
-        //         Number(receivedComponent.values[0]),
-        //         'all',
-        //         page,
-        //     );
-        /* } else */
-        {
+        if (receivedComponent.isSelectMenu()) {
+            return await viewAns(
+                receivedComponent,
+                soupId,
+                Number(receivedComponent.values[0]),
+                from,
+                fromPage,
+                'all',
+                page,
+                title,
+            );
+        } else {
             switch (receivedComponent.customId) {
                 case 'back': {
                     return Promise.resolve().then(() => view(receivedComponent, soupId, from, fromPage));

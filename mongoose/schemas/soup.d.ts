@@ -26,8 +26,6 @@ interface IAnswer {
     by: string;
     timestamp: number;
     reply: {
-        replied: boolean;
-        public: boolean;
         status: 'not replyed' | 'correct' | 'incorrect' | 'not correlated' | 'can\'t reply' | 'solution' | 'opposite solution';
         important: boolean;
         content: boolean;

@@ -10,7 +10,7 @@ const mod = resolveImport('./mod');
  * @param {string} from
  * @param {number} fromPage
  */
-async function del(oldBtn, id, from, fromPage) {
+module.exports = async function del(oldBtn, id, from, fromPage) {
     const randomNum = (Math.random() * 1000).toFixed(3);
     await Promise.all([
         oldBtn.message.edit({
@@ -41,7 +41,10 @@ async function del(oldBtn, id, from, fromPage) {
 
     const resModal = await oldBtn.awaitModalSubmit({ time: 30_000, filter: (m) => m.user.id === oldBtn.user.id && m.customId === 'delsoup' })
         // eslint-disable-next-line no-empty-function
-        .catch(() => { });
+        .catch(() => {
+            oldBtn.update = oldBtn.editReply;
+            view(oldBtn, id, from, fromPage);
+        });
 
     if (!resModal) return;
     /** @type {import('discord.js').Message} */
@@ -134,6 +137,4 @@ async function del(oldBtn, id, from, fromPage) {
             if (from === 'mod') return await Promise.resolve().then(() => mod(newBtn, fromPage));
         }
     }
-}
-
-module.exports = del;
+};

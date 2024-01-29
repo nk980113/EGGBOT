@@ -83,16 +83,6 @@ const answerSchema = new Schema({
         default: Date.now,
     },
     reply: {
-        replied: {
-            type: Boolean,
-            required: true,
-            default: false,
-        },
-        public: {
-            type: Boolean,
-            required: true,
-            default: false,
-        },
         status: {
             type: String,
             required: true,

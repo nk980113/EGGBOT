@@ -61,10 +61,10 @@ const { parentPort } = require('node:worker_threads');
                         }
 
                         case 'findallans': {
-                            const q = await Questions.find({ soupId: metadata.soupId });
+                            const q = await Questions.findOne({ soupId: metadata.soupId });
                             const anss = Answers.find({ original: q._id });
                             const totalPages = Math.ceil(await anss.clone().countDocuments() / 25);
-                            const rawTargetAnss = await anss.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
+                            const rawTargetAnss = await anss.sort({ answerId: -1 }).skip(metadata.page * 25).limit(25);
                             const targetAnss = rawTargetAnss.map((ans) => ({
                                 answerId: ans.answerId,
                                 by: ans.by,
@@ -79,7 +79,7 @@ const { parentPort } = require('node:worker_threads');
                             const q = await Questions.find({ soupId: metadata.soupId });
                             const anss = Answers.find({ original: q._id, by: metadata.authorId });
                             const totalPages = Math.ceil(await anss.clone().countDocuments() / 25);
-                            const rawTargetAnss = await anss.sort({ soupId: -1 }).skip(metadata.page * 25).limit(25);
+                            const rawTargetAnss = await anss.sort({ answerId: -1 }).skip(metadata.page * 25).limit(25);
                             const targetAnss = rawTargetAnss.map((ans) => ({
                                 answerId: ans.answerId,
                                 by: ans.by,
